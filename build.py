@@ -13,6 +13,18 @@ EMAIL = "midhalimited@gmail.com"
 NZBN = "9429051638016"
 HOURS = "Mon–Sat 7:30am–6:00pm"
 TODAY = datetime.date(2026, 10, 15).isoformat()
+STANDARD = "AS/NZS 3760:2022"
+FB_POST = "https://www.facebook.com/photo.php?fbid=122215666088570841&set=pb.61567125254358.-2207520000&type=3"
+
+def next_draw(d):
+    """Giveaway draws happen at the end of March, June, September and December."""
+    for m, day in ((3, 31), (6, 30), (9, 30), (12, 31)):
+        end = datetime.date(d.year, m, day)
+        if end >= d:
+            return end
+    return datetime.date(d.year + 1, 3, 31)
+
+NEXT_DRAW = next_draw(datetime.date.fromisoformat(TODAY)).strftime("%-d %B %Y")
 
 e = html.escape
 
@@ -68,8 +80,6 @@ REVIEWS = [
      "Midha tested over 350 power tools and industrial units across our facility. The QR tags make tracking effortless, and our audit register was emailed that evening. Punctual, polite, and top-tier Kiwi professionals."),
     ("Sarah McLachlan", "Homeowner · Silverstream, Upper Hutt", "Heat Pump Cleaning", "Jan 2026",
      "Our heat pump smelled musty whenever we turned on heat mode. Midha took the unit apart, treated the coils with foam sanitiser and flushed it thoroughly. The difference in air quality and heating speed was immediate. Highly recommend!"),
-    ("Tania Ross", "Senior Property Manager · Wellington Residential Rentals", "Healthy Homes Heating", "Dec 2025",
-     "We use Midha Limited for our rental heat pump compliance and annual servicing. Their digital reports are thorough and have satisfied every Tenancy Services audit. Extremely reliable."),
     ("Marcus Davies", "Site Foreman · Lower Hutt Construction", "Test & Tag", "Nov 2025",
      "Having a Kiwi technician who understands WorkSafe rules and shows up at 7am before the boys hit the tools is invaluable. Replaced two frayed cords on the spot too."),
     ("Elena Petrov", "Resident · Tawa", "Heat Pump Cleaning", "Oct 2025",
@@ -78,19 +88,152 @@ REVIEWS = [
      "Friendly local lads. Gave us honest advice on our heat pump placement and did a great job cleaning both units. Great to support a Kiwi-owned business right here in Wainui."),
     ("Liam O'Connor", "Cafe Owner · Petone", "Test & Tag", "Aug 2025",
      "Tested all our kitchen appliances, coffee grinders and POS gear without disrupting the lunch rush. Clean, quiet, and very reasonably priced. We'll use them every 12 months."),
-    ("Priya Sharma", "Landlord · Newlands", "Healthy Homes Heating", "Jul 2025",
-     "Booked online and had the assessment done within 48 hours. The report was concise and clear. Great communication from start to finish."),
 ]
 SERVICE_OPTIONS = [
     ("Heat pump – Elite Clean ($129)", "elite"),
     ("Heat pump – Pro Clean ($79)", "pro"),
     ("Heat pump – Comprehensive Clean ($189)", "comprehensive"),
     ("Heat pump – Filter replacement / repairs / pipe insulation", "heat-pump-other"),
-    ("Healthy Homes heating compliance", "healthy-homes"),
     ("Test & Tag (workplace)", "test-tag"),
     ("Electrical services (lighting, power points, cords)", "electrical"),
     ("Something else", "other"),
 ]
+
+# Test & tag is offered NZ-wide (heat pump and electrical stay Wellington only).
+# Each city page has its own copy so it isn't a "doorway page" with only the name swapped.
+RURAL = ("regional-rural-nz", "Regional & rural NZ")
+CITIES = [
+    dict(slug="auckland", name="Auckland", region="Auckland",
+         lead="Testing and tagging to " + STANDARD + " for Auckland construction sites, warehouses, offices and cafés, with QR tags and a digital register.",
+         intro=["Auckland has more building sites, hire yards and warehouses than anywhere else in the country, and that gear works hard. Construction and hire equipment is usually tested every 3 months, so a tester who turns up when they say they will matters.",
+                "We test across the isthmus and out to the North Shore, West and South Auckland. Large sites can be split over several visits, and early starts mean testing is done before the tools come out."],
+         industries=["Construction sites", "Warehouses & logistics", "Hire yards", "Offices", "Cafés & restaurants", "Workshops", "Schools", "Retail"],
+         nearby=["Auckland CBD", "North Shore", "Albany", "West Auckland", "East Tāmaki", "Penrose", "Manukau", "Pukekohe"],
+         faqs=[("How often should Auckland construction sites test and tag?", "Construction and demolition sites are usually tested every 3 months under AS/NZS 3760, along with RCD checks. We can book your retests in advance so nothing slips."),
+               ("Can you test several Auckland sites?", "Yes. Tell us where your sites are and roughly how many items each one has. We’ll quote for them together and keep a separate register for each site.")]),
+    dict(slug="hamilton", name="Hamilton", region="Waikato",
+         lead="Testing and tagging for Hamilton and Waikato workplaces, from engineering workshops to dairy sheds, done to " + STANDARD + ".",
+         intro=["The Waikato runs on agriculture, engineering and manufacturing, and much of that work relies on portable tools, leads and machinery used in tough conditions. Regular testing catches damaged cords and faulty gear before someone gets hurt.",
+                "We cover Hamilton city and the surrounding towns, including farms and rural workshops. Tell us how many items you have and where, and you’ll get a fixed price that includes travel."],
+         industries=["Engineering workshops", "Manufacturing", "Dairy sheds & farms", "Agricultural contractors", "Offices", "Schools", "Retail", "Cafés"],
+         nearby=["Hamilton city", "Cambridge", "Te Awamutu", "Ngāruawāhia", "Huntly", "Morrinsville", "Raglan"],
+         faqs=[("Do you test farm and dairy shed equipment?", 'Yes. We test the portable tools, leads and appliances used on farms and in dairy sheds, and flag anything damaged. See our <a href="/test-and-tag/regional-rural-nz/">regional and rural page</a> for how rural visits work.'),
+               ("How often should workshop tools be tested?", "Factories, workshops and other heavy-use sites are usually tested every 6 months. Offices and other low-risk areas can go 12 months or longer.")]),
+    dict(slug="tauranga", name="Tauranga", region="Bay of Plenty",
+         lead="Test and tag for Tauranga and the Western Bay of Plenty: port businesses, packhouses, building sites and offices.",
+         intro=["Tauranga is one of the country’s fastest-growing cities, with a busy port, plenty of construction and a large kiwifruit industry around Te Puke. Packhouses and coolstores lean heavily on electrical equipment during the season, so it pays to have everything tested before the rush.",
+                "We cover Tauranga, Mount Maunganui, Papamoa and out to Te Puke and Katikati, and can work around early starts and shift patterns."],
+         industries=["Packhouses & coolstores", "Orchards", "Port & logistics", "Construction", "Offices", "Hospitality", "Retail", "Schools"],
+         nearby=["Tauranga", "Mount Maunganui", "Papamoa", "Bethlehem", "Te Puke", "Ōmokoroa", "Katikati"],
+         faqs=[("Can you test our packhouse before the kiwifruit season?", "Yes. Let us know when your season starts and we’ll book testing beforehand, so your gear is tagged and ready when the fruit arrives."),
+               ("Do you work around shift times?", "Yes. We can test early in the morning, between shifts or at quieter times so your operation keeps running.")]),
+    dict(slug="rotorua", name="Rotorua", region="Bay of Plenty",
+         lead="Test and tag for Rotorua hotels, motels, tourism operators, forestry businesses and offices, to " + STANDARD + ".",
+         intro=["Rotorua’s hotels, motels and tourism operators have a lot of guest-facing appliances, from kettles and hair dryers to commercial kitchen gear. Forestry and wood processing businesses rely on heavy-duty tools and leads.",
+                "We plan testing around your guests and your busy times, so rooms and kitchens stay open while we work."],
+         industries=["Hotels & motels", "Tourism operators", "Forestry & wood processing", "Cafés & restaurants", "Offices", "Schools"],
+         nearby=["Rotorua central", "Ngongotahā", "Fairy Springs", "Lynmore", "Owhata", "Reporoa (by arrangement)"],
+         faqs=[("Can you test appliances in guest rooms?", "Yes. We test kettles, irons, hair dryers, TVs and other room appliances, working floor by floor around housekeeping so rooms aren’t held up."),
+               ("Do you test forestry and sawmill equipment?", "We test portable electrical tools, leads and appliances to " + STANDARD + ". Tell us what’s on site and we’ll confirm what we can test.")]),
+    dict(slug="whangarei", name="Whangārei", region="Northland",
+         lead="Test and tag across Whangārei and Northland for marine businesses, workshops, building sites and offices.",
+         intro=["From boat builders and marine engineers around the harbour to building sites and offices in town, Whangārei businesses use plenty of portable electrical gear, often in damp, salty conditions that are hard on cords and plugs.",
+                "We cover Whangārei and nearby towns, and further into Northland by arrangement. Your quote includes travel, so the price is clear from the start."],
+         industries=["Marine & boat building", "Engineering workshops", "Construction", "Healthcare", "Schools", "Offices", "Retail", "Hospitality"],
+         nearby=["Whangārei city", "Kamo", "Tikipunga", "Onerahi", "Hikurangi", "Ruakākā", "Kerikeri (by arrangement)"],
+         faqs=[("Does salt air affect electrical equipment?", "It can. Moisture and salt speed up corrosion on plugs, sockets and leads, so equipment used around boats and the coast benefits from regular inspection and testing."),
+               ("Do you cover the rest of Northland?", 'Yes, by arrangement. See our <a href="/test-and-tag/regional-rural-nz/">regional and rural page</a> and tell us where you are.')]),
+    dict(slug="napier-hastings", name="Napier & Hastings", region="Hawke’s Bay",
+         lead="Test and tag for Napier, Hastings and Hawke’s Bay orchards, packhouses, wineries, food processors and offices.",
+         intro=["Hawke’s Bay is fruit, wine and food country. Orchards, packhouses, wineries and processing plants all rely on electrical equipment, alongside Napier Port and a busy construction scene. Seasonal sites benefit from getting everything tested before harvest.",
+                "We cover Napier, Hastings, Havelock North and the surrounding area, with QR tags and a digital register for every site."],
+         industries=["Orchards & packhouses", "Wineries", "Food processing", "Port & logistics", "Construction", "Offices", "Schools", "Hospitality"],
+         nearby=["Napier", "Ahuriri", "Taradale", "Hastings", "Havelock North", "Flaxmere", "Clive"],
+         faqs=[("Can you test before harvest or vintage?", "Yes. Tell us when your season starts and we’ll book testing before then, so seasonal staff start with safe, tagged equipment."),
+               ("Do you test kitchen and bar equipment at wineries?", "Yes. Cellar door kitchens, bars and function areas can be tested along with the winery’s tools and leads.")]),
+    dict(slug="new-plymouth", name="New Plymouth", region="Taranaki",
+         lead="Test and tag for New Plymouth and Taranaki engineering firms, energy contractors, dairy businesses and offices.",
+         intro=["Taranaki has a strong engineering and energy sector, alongside dairy farming and manufacturing. Workshops and contractors often use heavy-duty tools and long extension leads that need regular checking.",
+                "We cover New Plymouth, Bell Block, Waitara and Inglewood, and further around the mountain by arrangement."],
+         industries=["Engineering", "Energy contractors", "Manufacturing", "Dairy & farms", "Construction", "Offices", "Schools", "Retail"],
+         nearby=["New Plymouth", "Bell Block", "Waitara", "Inglewood", "Ōakura", "Stratford (by arrangement)"],
+         faqs=[("Can you test contractors’ tools before a site induction?", "Yes. Many sites ask contractors to show that their tools and leads carry current tags. We can test a contractor’s kit so it’s ready to go."),
+               ("How do I know when items are due for a retest?", "Each item has a QR tag showing when it was tested and when the next test is due, and we send reminders before your retests.")]),
+    dict(slug="palmerston-north", name="Palmerston North", region="Manawatū",
+         lead="Test and tag for Palmerston North and Manawatū warehouses, distribution centres, schools, healthcare and offices.",
+         intro=["Palmerston North is a major distribution hub for the lower North Island, with large warehouses and freight operations alongside a big education and healthcare sector. Busy sites like these need testing that fits around shifts and deliveries.",
+                "We cover Palmerston North city, Feilding, Ashhurst and the wider Manawatū."],
+         industries=["Warehouses & distribution", "Freight & logistics", "Education", "Healthcare", "Offices", "Retail", "Agriculture", "Hospitality"],
+         nearby=["Palmerston North", "Feilding", "Ashhurst", "Bunnythorpe", "Longburn", "Levin (by arrangement)"],
+         faqs=[("Can you test a large warehouse without stopping work?", "Yes. We work section by section and around your shifts, so the warehouse keeps moving while we test."),
+               ("Can you test schools during the holidays?", "Yes. We can test classroom appliances, computers and leads during school holidays or after hours, so lessons aren’t interrupted.")]),
+    dict(slug="whanganui", name="Whanganui", region="Manawatū-Whanganui",
+         lead="Test and tag for Whanganui manufacturers, workshops, studios, schools, healthcare providers and small businesses.",
+         intro=["Whanganui has a strong mix of manufacturing, workshops, schools and healthcare, plus a creative community of studios and makers. Whatever the size of your business, regular testing helps keep your team and visitors safe.",
+                "We cover Whanganui city and the surrounding district."],
+         industries=["Manufacturing", "Workshops", "Studios & makers", "Healthcare", "Schools", "Offices", "Retail", "Hospitality"],
+         nearby=["Whanganui central", "Castlecliff", "Aramoho", "Gonville", "Springvale", "Marton (by arrangement)"],
+         faqs=[("Do small businesses need test and tag?", "Every business must keep its electrical equipment safe. Test and tag is the most common way to show you’re doing that, whether you have 10 items or 1,000."),
+               ("What happens if an item fails?", "It’s tagged out of service straight away so nobody uses it, and it’s listed in your register so you know what needs repairing or replacing.")]),
+    dict(slug="wellington", name="Wellington", region="Wellington",
+         lead="Test and tag across Wellington, the Hutt Valley, Porirua and Kāpiti, from our home base in Wainuiomata.",
+         intro=["Wellington is home. We’re based in Wainuiomata, so Wellington workplaces get our quickest bookings, whether that’s a government office, a café on Cuba Street or a workshop in Seaview.",
+                "We test for offices, construction sites, workshops, schools and hospitality across the region, and in Wellington we can also look after your heat pumps and electrical work while we’re there."],
+         industries=["Offices", "Construction sites", "Workshops", "Cafés & bars", "Schools", "Retail", "Rental properties", "Community halls"],
+         nearby=["Wellington CBD", "Lower Hutt", "Petone", "Seaview & Gracefield", "Wainuiomata", "Upper Hutt", "Porirua", "Tawa", "Johnsonville", "Kāpiti Coast"],
+         faqs=[("How quickly can you test in Wellington?", "Wellington is our home region, so it gets our fastest bookings. Wainuiomata and Hutt Valley jobs can often be booked within a day or two."),
+               ("Can you clean our heat pumps in the same visit?", 'Yes. In the Wellington region we also do <a href="/heat-pump-cleaning/">heat pump cleaning</a> and <a href="/electrical-services/">electrical work</a>, so one visit can cover everything.')]),
+    dict(slug="nelson", name="Nelson", region="Nelson Tasman",
+         lead="Test and tag for Nelson and Tasman seafood processors, orchards, workshops, hospitality and offices.",
+         intro=["Nelson’s economy is built on seafood, horticulture, forestry and tourism. Processing plants, coolstores and busy hospitality kitchens all depend on equipment that needs regular checking.",
+                "We cover Nelson, Stoke and Richmond, and out to Māpua and Motueka."],
+         industries=["Seafood processing", "Orchards & horticulture", "Forestry", "Hospitality", "Construction", "Offices", "Schools", "Retail"],
+         nearby=["Nelson", "Tāhunanui", "Stoke", "Richmond", "Brightwater", "Māpua", "Motueka"],
+         faqs=[("Do you test equipment used in wet or cold areas?", "Yes. Wet areas, coolstores and processing rooms are hard on cords and plugs, so we inspect that equipment closely and recommend a suitable retest interval."),
+               ("Can you test our café or restaurant kitchen?", "Yes. We test plug-in kitchen appliances, coffee grinders and POS gear around your service times.")]),
+    dict(slug="blenheim", name="Blenheim", region="Marlborough",
+         lead="Test and tag for Blenheim and Marlborough vineyards, wineries, contractors, Picton businesses and offices.",
+         intro=["Marlborough is New Zealand’s biggest wine region. Vineyards, wineries and their contractors use a lot of plug-in gear, from chargers for electric pruning tools to winery equipment. Picton adds port, ferry and tourism businesses to the mix.",
+                "We cover Blenheim, Renwick, Picton and the surrounding district."],
+         industries=["Vineyards", "Wineries", "Vineyard contractors", "Port & tourism", "Hospitality", "Offices", "Schools", "Retail"],
+         nearby=["Blenheim", "Renwick", "Spring Creek", "Picton", "Seddon", "Havelock (by arrangement)"],
+         faqs=[("Can you test chargers for electric pruning tools?", "Yes. Plug-in chargers, leads and power tools are all tested and tagged, and it’s worth doing before pruning season starts."),
+               ("Can our contractors’ gear be tested too?", "Yes. We can test your contractors’ tools and leads so everything used on your vineyard is tagged.")]),
+    dict(slug="christchurch", name="Christchurch", region="Canterbury",
+         lead="Test and tag for Christchurch and Canterbury building sites, manufacturers, warehouses, schools and offices.",
+         intro=["Christchurch has one of the country’s busiest construction scenes, plus a large manufacturing and warehousing base around Hornby, Sockburn and Islington. Building sites and hire equipment are usually tested every 3 months.",
+                "We cover the city and Lyttelton, plus the growing towns of Rolleston, Lincoln, Rangiora and Kaiapoi."],
+         industries=["Construction sites", "Manufacturing", "Warehouses", "Hire equipment", "Schools & tertiary", "Offices", "Hospitality", "Retail"],
+         nearby=["Christchurch central", "Riccarton", "Hornby", "Papanui", "Lyttelton", "Rolleston", "Lincoln", "Rangiora", "Kaiapoi"],
+         faqs=[("Do you test hire equipment?", "Yes. Hire equipment is usually tested every 3 months, with a visual check before each hire. We can set up a regular schedule for your fleet."),
+               ("Can you tag our equipment before we open?", "Yes. We can check and tag your equipment before opening day, so your register is complete from the start.")]),
+    dict(slug="dunedin", name="Dunedin", region="Otago",
+         lead="Test and tag for Dunedin and Otago tertiary providers, student accommodation, healthcare, hospitality and offices.",
+         intro=["Dunedin is a university city, with a large student population, big tertiary and healthcare sectors, and plenty of cafés and bars. Halls, flats and shared kitchens see a lot of appliances come and go, which makes regular testing worthwhile.",
+                "We cover the city, Mosgiel and Port Chalmers, and the wider Otago coast by arrangement."],
+         industries=["Tertiary & education", "Student accommodation", "Healthcare", "Hospitality", "Port & logistics", "Manufacturing", "Offices", "Retail"],
+         nearby=["Dunedin central", "North Dunedin", "South Dunedin", "Green Island", "Mosgiel", "Port Chalmers", "Waikouaiti (by arrangement)"],
+         faqs=[("Can you test appliances in student accommodation?", "Yes. We test shared kitchen appliances, heaters and other plug-in items, and can work during semester breaks to avoid disruption."),
+               ("How do you handle items that fail?", "Anything that fails is tagged out of service straight away and listed in your register, so you know exactly what needs repairing or replacing.")]),
+    dict(slug="queenstown", name="Queenstown", region="Otago",
+         lead="Test and tag for Queenstown hotels, restaurants, tourism operators, ski businesses and building sites.",
+         intro=["Queenstown runs on tourism and hospitality, with hotels, restaurants, bars and adventure operators working flat out through the seasons, plus a steady flow of construction. Equipment gets heavy use, so regular testing matters.",
+                "We plan visits for quieter times, such as the shoulder seasons, so testing doesn’t get in the way of your busiest weeks. We cover Queenstown, Frankton, Arrowtown and Cromwell, and Wānaka by arrangement."],
+         industries=["Hotels & lodges", "Restaurants & bars", "Tourism operators", "Ski & snow businesses", "Construction", "Holiday rentals", "Offices", "Retail"],
+         nearby=["Queenstown central", "Frankton", "Kelvin Heights", "Jacks Point", "Arrowtown", "Cromwell", "Wānaka (by arrangement)"],
+         faqs=[("Can you test before the ski season?", "Yes. Getting rental, workshop and café equipment tested before the season starts means you’re ready for the first busy weekend."),
+               ("Do you test appliances in holiday rentals?", "Yes. Appliances in holiday homes and serviced apartments can be tested and tagged between guest stays.")]),
+    dict(slug="invercargill", name="Invercargill", region="Southland",
+         lead="Test and tag for Invercargill and Southland dairy, meat processing, engineering, port and farm businesses.",
+         intro=["Southland is farming country, with dairy and sheep farms, meat and dairy processing, and the engineering firms that keep it all running. Bluff adds port and seafood businesses. These are demanding environments for cords, leads and tools.",
+                "We cover Invercargill, Bluff, Gore and Winton, and rural Southland by arrangement."],
+         industries=["Dairy & meat processing", "Farms", "Engineering", "Port & seafood", "Construction", "Offices", "Schools", "Retail"],
+         nearby=["Invercargill", "Otatara", "Bluff", "Winton", "Riverton", "Gore", "Mataura"],
+         faqs=[("Do you test equipment on farms?", 'Yes. See our <a href="/test-and-tag/regional-rural-nz/">regional and rural page</a> for how we plan visits to farms and rural sites.'),
+               ("How often should processing plant equipment be tested?", "Harsh environments like processing plants and factories are usually tested every 6 months. We’ll recommend the right interval for each area of your site.")]),
+]
+NZ_REGIONS = ["Northland", "Auckland", "Waikato", "Bay of Plenty", "Gisborne", "Hawke’s Bay", "Taranaki", "Manawatū-Whanganui",
+              "Wellington", "Tasman", "Nelson", "Marlborough", "West Coast", "Canterbury", "Otago", "Southland"]
 
 # ---------------------------------------------------------------- layout
 def head(title, desc, path, extra_ld=None):
@@ -99,9 +242,9 @@ def head(title, desc, path, extra_ld=None):
         "@context": "https://schema.org", "@type": "LocalBusiness", "@id": SITE + "/#business",
         "name": "Midha Limited", "url": SITE + "/", "telephone": TEL, "email": EMAIL,
         "image": SITE + "/assets/img/og-image.jpg", "logo": SITE + "/assets/img/logo-512.png",
-        "description": "Test & tag, heat pump cleaning and electrical services across Greater Wellington.",
+        "description": "Test & tag across New Zealand, plus heat pump cleaning and electrical services in Greater Wellington.",
         "address": {"@type": "PostalAddress", "addressLocality": "Wainuiomata", "addressRegion": "Wellington", "addressCountry": "NZ"},
-        "areaServed": [a[0] for a in AREAS],
+        "areaServed": [{"@type": "Country", "name": "New Zealand"}, {"@type": "AdministrativeArea", "name": "Wellington Region"}],
         "openingHoursSpecification": [{"@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:30", "closes": "18:00"}],
         "identifier": {"@type": "PropertyValue", "propertyID": "NZBN", "value": NZBN},
@@ -141,8 +284,9 @@ def nav(active):
     def cur(p): return ' aria-current="page"' if active == p else ""
     services = "".join(
         f'<li><a href="{href}"{cur(href)}>{icon(ic, 18)} {e(name)}</a></li>' for _, href, name, ic in SERVICES)
-    areas = "".join(f'<li><a href="/service-areas/#{slug(a[0])}">{e(a[0])}</a></li>' for a in AREAS)
-    return f"""<div class="announce" role="region" aria-label="Promotion">Win a free heat pump clean, Wellington only. <a href="/heat-pump-cleaning/#giveaway">How to enter</a></div>
+    areas = (f'<li><a href="/test-and-tag/#locations">{icon("tag", 18)} Test &amp; tag: all of NZ</a></li>'
+             f'<li><a href="/service-areas/">{icon("pin", 18)} Heat pumps &amp; electrical: Wellington</a></li>')
+    return f"""<div class="announce" role="region" aria-label="Promotion">Win a free Pro Clean. A new Wellington winner every 3 months. <a href="/heat-pump-cleaning/#giveaway">How to enter</a></div>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="Midha Limited, home">
@@ -154,7 +298,7 @@ def nav(active):
         <li class="has-sub"><button class="nav-parent" type="button" aria-expanded="false" aria-controls="sub-services">Services {icon("chev", 16)}</button>
           <ul class="submenu" id="sub-services">{services}</ul></li>
         <li class="has-sub"><button class="nav-parent" type="button" aria-expanded="false" aria-controls="sub-areas">Service areas {icon("chev", 16)}</button>
-          <ul class="submenu" id="sub-areas">{areas}<li><a href="/service-areas/">All areas</a></li></ul></li>
+          <ul class="submenu" id="sub-areas">{areas}</ul></li>
         <li><a href="/reviews/"{cur("/reviews/")}>Reviews</a></li>
         <li><a href="/about/"{cur("/about/")}>About</a></li>
         <li><a href="/contact/"{cur("/contact/")}>Contact</a></li>
@@ -171,17 +315,18 @@ def nav(active):
 
 def footer():
     services = "".join(f'<li><a href="{h}">{e(n)}</a></li>' for _, h, n, _ in SERVICES)
-    areas = "".join(f'<li><a href="/service-areas/#{slug(a[0])}">{e(a[0])}</a></li>' for a in AREAS)
+    top = ["auckland", "hamilton", "tauranga", "wellington", "christchurch", "dunedin"]
+    areas = "".join(f'<li><a href="/test-and-tag/{c["slug"]}/">Test &amp; tag {e(c["name"])}</a></li>' for c in CITIES if c["slug"] in top)
     return f"""<footer class="site-footer on-dark">
   <div class="wrap">
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="/"><img src="/assets/img/logo-96.png" width="48" height="48" alt=""><span class="brand-name"><strong>Midha Limited</strong></span></a>
-        <p>Test &amp; tag, heat pump cleaning and electrical services for homes and businesses across Greater Wellington. Based in Wainuiomata.</p>
+        <p>Test &amp; tag for workplaces across New Zealand. Heat pump cleaning and electrical services for homes and businesses in Greater Wellington. Based in Wainuiomata.</p>
         <p class="footer-small">NZBN {NZBN}<br>100% NZ owned &amp; operated</p>
       </div>
-      <div><h2>Services</h2><ul>{services}<li><a href="/heat-pump-cleaning/#healthy-homes">Healthy Homes heating</a></li></ul></div>
-      <div><h2>Service areas</h2><ul>{areas}</ul></div>
+      <div><h2>Services</h2><ul>{services}<li><a href="/heat-pump-cleaning/#healthy-homes">Healthy Homes heating</a></li><li><a href="/service-areas/">Wellington service areas</a></li></ul></div>
+      <div><h2>Test &amp; tag NZ</h2><ul>{areas}<li><a href="/test-and-tag/#locations">All locations</a></li></ul></div>
       <div><h2>Get in touch</h2><ul>
         <li><a href="tel:{TEL}">{PHONE}</a></li>
         <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
@@ -223,8 +368,8 @@ def page_hero(crumbs, eyebrow, h1, lead, ctas=True, badge=""):
   <p class="lead">{lead}</p>{btns}
 </div></section>""", ld
 
-def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need and we’ll reply within 2 hours during business hours.", sage=False):
-    opts = "".join(f'<option value="{v}">{e(l)}</option>' for l, v in SERVICE_OPTIONS)
+def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need and we’ll reply within 2 hours during business hours.", sage=False, default=""):
+    opts = "".join(f'<option value="{v}"{" selected" if v == default else ""}>{e(l)}</option>' for l, v in SERVICE_OPTIONS)
     return f"""<section class="section{' section--sage' if sage else ''}" id="quote" aria-labelledby="quote-title">
 <div class="wrap quote">
   <div class="quote-info reveal">
@@ -235,7 +380,7 @@ def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need 
       <li>{icon("phone")}<span><a href="tel:{TEL}">{PHONE}</a><br><span class="note">Call or text</span></span></li>
       <li>{icon("mail")}<span><a href="mailto:{EMAIL}">{EMAIL}</a></span></li>
       <li>{icon("clock")}<span>{HOURS}<br><span class="note">Urgent callouts available</span></span></li>
-      <li>{icon("pin")}<span>Based in Wainuiomata, serving Greater Wellington</span></li>
+      <li>{icon("pin")}<span>Based in Wainuiomata<br><span class="note">Test &amp; tag NZ-wide · heat pumps &amp; electrical in Greater Wellington</span></span></li>
     </ul>
   </div>
   <div class="form-card reveal">
@@ -244,7 +389,7 @@ def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need 
         <div class="field"><label for="name">Your name</label><input id="name" name="name" autocomplete="name"></div>
         <div class="field"><label for="phone">Phone number <span aria-hidden="true">*</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" required aria-describedby="phone-err"><span class="error" id="phone-err">Please enter a phone number so we can reach you.</span></div>
         <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-err"><span class="error" id="email-err">That email doesn’t look right.</span></div>
-        <div class="field"><label for="suburb">Suburb</label><input id="suburb" name="suburb" autocomplete="address-level2"></div>
+        <div class="field"><label for="suburb">Suburb or town</label><input id="suburb" name="suburb" autocomplete="address-level2"></div>
         <div class="field full"><label for="service">What do you need? <span aria-hidden="true">*</span></label><select id="service" name="service" required aria-describedby="service-err"><option value="">Choose a service</option>{opts}</select><span class="error" id="service-err">Please choose a service.</span></div>
         <div class="field full"><label for="details">Job details <span class="hint">(optional: number of heat pumps or items, timing)</span></label><textarea id="details" name="details"></textarea></div>
         <div class="hp-field" aria-hidden="true"><label for="_gotcha">Leave this empty</label><input id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off"></div>
@@ -307,17 +452,17 @@ def home():
     chooser = f"""
 <div class="wrap"><div class="chooser">
   <a class="card card--lift" href="/test-and-tag/">
-    <div class="icon-chip">{icon("tag", 26)}</div><span class="num">For workplaces</span>
+    <div class="icon-chip">{icon("tag", 26)}</div><span class="num">For workplaces · NZ-wide</span>
     <h2 class="h3" style="font-size:var(--fs-h3)">Test &amp; Tag</h2>
-    <p>AS/NZS 3760 testing for tools, appliances, leads and RCDs, with QR tags and a digital register.</p>
+    <p>{STANDARD} testing for tools, appliances, leads and RCDs anywhere in New Zealand, with QR tags and a digital register.</p>
     <span class="more">Test &amp; tag details →</span></a>
   <a class="card card--lift card--ink on-dark" href="/heat-pump-cleaning/">
-    <div class="icon-chip">{icon("fan", 26, "#FFFFFF")}</div><span class="num" style="color:#C9BFAE">For homes &amp; rentals</span>
+    <div class="icon-chip">{icon("fan", 26, "#FFFFFF")}</div><span class="num" style="color:#C9BFAE">For homes &amp; rentals · Wellington</span>
     <h2 style="font-size:var(--fs-h3)">Heat Pump Cleaning</h2>
     <p>Deep cleans from <strong style="color:#fff">$79 per unit</strong>, GST incl. Mould gone, airflow back, lower power bills.</p>
     <span class="more" style="color:#C9BFAE">See packages &amp; prices →</span></a>
   <a class="card card--lift" href="/electrical-services/">
-    <div class="icon-chip">{icon("bulb", 26)}</div><span class="num">For homes &amp; businesses</span>
+    <div class="icon-chip">{icon("bulb", 26)}</div><span class="num">For homes &amp; businesses · Wellington</span>
     <h2 style="font-size:var(--fs-h3)">Electrical Services</h2>
     <p>Light installations, LED downlights, security and sensor lights, power points, cord and lead repairs.</p>
     <span class="more">Electrical details →</span></a>
@@ -338,7 +483,7 @@ def home():
     <div class="feature reveal"><div class="icon-chip">{icon("dollar", 24, "#FFFFFF")}</div><div><h3>Fixed, upfront pricing</h3><p>The price on your quote is the price you pay. No surprise travel or admin fees.</p></div></div>
     <div class="feature reveal"><div class="icon-chip">{icon("qr", 24, "#FFFFFF")}</div><div><h3>Digital QR reports</h3><p>Every tagged item gets a QR code, and your register arrives as a PDF with reminders before retests are due.</p></div></div>
     <div class="feature reveal"><div class="icon-chip">{icon("leaf", 24, "#FFFFFF")}</div><div><h3>A real deep clean</h3><p>Not just a filter wipe. We wash the coils and fan to clear mould and bacteria from the air you breathe.</p></div></div>
-    <div class="feature reveal"><div class="icon-chip">{icon("pin", 24, "#FFFFFF")}</div><div><h3>Based in Wainuiomata</h3><p>Prompt callouts across the Hutt Valley, northern suburbs and Porirua. No callout surcharge in Wainui.</p></div></div>
+    <div class="feature reveal"><div class="icon-chip">{icon("pin", 24, "#FFFFFF")}</div><div><h3>Wellington-based, NZ-wide</h3><p>Prompt heat pump and electrical callouts across the Hutt Valley, northern suburbs and Porirua, and test &amp; tag anywhere in New Zealand.</p></div></div>
   </div>
   <div class="btn-row" style="margin-top:36px"><a class="btn btn--gold" href="/about/">About Midha</a></div>
 </div></section>"""
@@ -349,28 +494,27 @@ def home():
   <div class="grid grid-3">{reviews}</div>
   <div class="btn-row" style="margin-top:28px"><a class="btn btn--outline" href="/reviews/">Read all reviews</a></div>
 </div></section>"""
-    areas = "".join(f'<li><a href="/service-areas/#{slug(a[0])}">{e(a[0])}</a> · {e(a[1])}</li>' for a in AREAS)
     area_sec = f"""
 <section class="section section--sage" aria-labelledby="areas-title"><div class="wrap split">
-  <div class="stack reveal"><span class="eyebrow">Service areas</span><h2 id="areas-title">Proudly serving Greater Wellington.</h2>
-  <p class="lead">From our base in Wainuiomata we cover the Hutt Valley, Wellington’s northern suburbs and Porirua, with no hidden travel charges.</p>
-  <a class="btn btn--primary" href="/service-areas/" style="align-self:flex-start">See all areas</a></div>
-  <ul class="chips reveal" style="flex-direction:column;align-items:flex-start;gap:10px">{areas}</ul>
+  <div class="stack reveal"><span class="eyebrow">Where we work</span><h2 id="areas-title">Test &amp; tag NZ-wide. Heat pumps and electrical in Wellington.</h2>
+  <p class="lead">We test and tag workplaces from Whangārei to Invercargill. Heat pump cleaning and electrical work are for homes and businesses across Greater Wellington, from our base in Wainuiomata.</p>
+  <div class="btn-row"><a class="btn btn--primary" href="/test-and-tag/#locations">Test &amp; tag locations</a><a class="btn btn--light" href="/service-areas/">Wellington service areas</a></div></div>
+  <div class="reveal">{location_links()}</div>
 </div></section>"""
     fq, fld = faq([
         ("How much does a heat pump clean cost?", 'Our Pro Clean is $79, Elite Clean $129 and Comprehensive Clean $189. Prices are per heat pump and include GST. <a href="/heat-pump-cleaning/">Compare packages</a>.'),
         ("Do you only do test &amp; tag for businesses?".replace("&amp;", "&"), "Test &amp; tag is mainly for workplaces, construction sites, schools, cafés and offices, but we’re happy to test gear for anyone who needs it."),
         ("How quickly can you come out?", "We aim to reply to every quote request within 2 hours during business hours. Wainuiomata jobs can often be booked same day or next day; see our service areas for other suburbs."),
-        ("Which areas do you cover?", 'Wainuiomata, Lower Hutt, Upper Hutt, Tawa, Newlands, Porirua and the wider Greater Wellington region. <a href="/service-areas/">See service areas</a>.'),
+        ("Which areas do you cover?", 'Test &amp; tag is available right across New Zealand. <a href="/test-and-tag/#locations">See test &amp; tag locations</a>. Heat pump cleaning and electrical work cover Wainuiomata, Lower Hutt, Upper Hutt, Tawa, Newlands, Porirua and the wider Wellington region. <a href="/service-areas/">See Wellington service areas</a>.'),
     ], title="Got questions?")
     ld = [fld]
     body = f"""<main id="main">
 <section class="hero"><div class="wrap"><div class="hero-frame">
   {hero_img}
   <div class="hero-panel glass reveal">
-    <div class="hero-meta"><span class="badge badge--urgent">Win a free heat pump clean</span><span>Wainuiomata-based · 100% NZ owned</span></div>
+    <div class="hero-meta"><span class="badge badge--urgent">Win a free Pro Clean</span><span>Wainuiomata-based · 100% NZ owned</span></div>
     <h1>Test &amp; tag, heat pump cleaning and electrical work, sorted.</h1>
-    <p class="lead">One local team for Greater Wellington homes and workplaces. Fixed upfront prices, digital reports, and a reply within 2 hours.</p>
+    <p class="lead">Test &amp; tag for workplaces anywhere in New Zealand, plus heat pump cleaning and electrical work for Greater Wellington. Fixed upfront prices, digital reports, and a reply within 2 hours.</p>
     <div class="btn-row"><a class="btn btn--primary" href="/contact/#quote">Get a free quote</a><a class="btn btn--light" href="tel:{TEL}">Call {PHONE}</a></div>
   </div>
 </div></div></section>
@@ -384,8 +528,8 @@ def home():
 {fq}
 {quote_section()}
 </main>"""
-    write("/", head("Test & Tag, Heat Pump Cleaning & Electrical | Midha Limited Wellington",
-                    "Wainuiomata-based test & tag, heat pump cleaning from $79 and electrical services across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua. Fixed prices.",
+    write("/", head("Test & Tag NZ-wide | Heat Pump Cleaning Wellington | Midha",
+                    "AS/NZS 3760:2022 test & tag for workplaces across New Zealand. Heat pump cleaning from $79 and electrical services in Lower Hutt, Upper Hutt and Wellington.",
                     "/", ld) + nav("/") + body + footer())
 
 def packages_section(compact=False):
@@ -446,7 +590,7 @@ def heat_pump():
     <article class="card reveal" id="healthy-homes"><div class="icon-chip">{icon("home")}</div><h3>Healthy Homes heating compliance</h3>
       <p>For landlords and property managers. We check your heat pump meets the Healthy Homes heating requirement for the main living room and give you a clear report for your records.</p>
       <ul class="check-list"><li>Heating capacity assessment for the main living room</li><li>Check existing heat pumps are working well with clean airflow</li><li>Digital report for your tenancy records</li><li>Annual maintenance plans for property managers</li></ul>
-      <a class="more" href="/contact/?service=healthy-homes#quote" data-service="healthy-homes">Ask about Healthy Homes →</a></article>
+      <a class="more" href="/contact/?service=other#quote" data-service="other">Ask about Healthy Homes →</a></article>
   </div>
 </div></section>"""
     process = f"""
@@ -460,11 +604,14 @@ def heat_pump():
 </div></section>"""
     give = f"""
 <section class="section section--sage" id="giveaway" aria-labelledby="give-title"><div class="wrap giveaway">
-  {pic("giveaway-promo", "Midha giveaway poster: win one free heat pump cleaning in Wellington", sizes="320px")}
-  <div class="stack"><span class="badge badge--urgent" style="align-self:flex-start">Giveaway now on</span>
-    <h2 id="give-title">Win a free heat pump clean.</h2>
-    <p class="lead">One lucky Wellington winner will be chosen at random. To enter, find our giveaway post on social media and:</p>
-    <ul class="check-list"><li>Like the post</li><li>Tag 3 friends in Wellington</li><li>Live in the Wellington region</li></ul>
+  <a href="{e(FB_POST)}" target="_blank" rel="noopener" aria-label="Open our giveaway post on Facebook (opens in a new tab)">{pic("giveaway-promo", "Midha giveaway poster: win one free heat pump cleaning in Wellington", sizes="320px")}</a>
+  <div class="stack"><span class="badge badge--urgent" style="align-self:flex-start">Next draw: <span data-next-draw>{NEXT_DRAW}</span></span>
+    <h2 id="give-title">Win a free Pro Clean.</h2>
+    <p class="lead">Every 3 months we give a free Pro Clean ($79 value) to one Wellington winner, drawn at random. Draws happen at the end of March, June, September and December.</p>
+    <p>To enter, go to our giveaway post on Facebook and:</p>
+    <ul class="check-list"><li>Like the post</li><li>Tag 3 friends in Wellington in the comments</li><li>Live in the Wellington region</li></ul>
+    <div class="btn-row"><a class="btn btn--primary" href="{e(FB_POST)}" target="_blank" rel="noopener">Enter on Facebook <span class="visually-hidden">(opens in a new tab)</span></a></div>
+    <p class="note">This giveaway is run by Midha Limited and isn’t sponsored or run by Facebook.</p>
   </div>
 </div></section>"""
     fq, fld = faq([
@@ -476,24 +623,50 @@ def heat_pump():
         ("How long does a clean take?", "Allow 1 to 2 hours per heat pump depending on the package and access. We’ll give you a time window when you book."),
     ], title="Heat pump questions")
     svc_ld = {"@context": "https://schema.org", "@type": "Service", "serviceType": "Heat pump cleaning", "provider": {"@id": SITE + "/#business"},
-              "areaServed": "Greater Wellington", "offers": [
+              "areaServed": {"@type": "AdministrativeArea", "name": "Wellington Region"}, "offers": [
                   {"@type": "Offer", "name": n, "price": p, "priceCurrency": "NZD"} for n, p in (("Pro Clean", "79"), ("Elite Clean", "129"), ("Comprehensive Clean", "189"))]}
     body = f"""<main id="main">{hero}{packages_section()}{extras}{process}{give}{fq}{quote_section("Book your heat pump clean", "Choose a package below, or tell us what’s wrong and we’ll recommend one.")}</main>"""
-    write("/heat-pump-cleaning/", head("Heat Pump Cleaning Wellington from $79 | Midha Limited",
+    write("/heat-pump-cleaning/", head("Heat Pump Cleaning Wellington & Lower Hutt from $79 | Midha",
         "Heat pump deep cleaning in Wainuiomata, Lower Hutt, Upper Hutt, Tawa and Porirua. Pro $79, Elite $129, Comprehensive $189 per unit, GST incl.",
         "/heat-pump-cleaning/", [bld, fld, svc_ld]) + nav("/heat-pump-cleaning/") + body + footer())
 
+def location_links(exclude=None):
+    """Link list of every test & tag city page, plus the rural page."""
+    items = "".join(f'<li><a href="/test-and-tag/{c["slug"]}/">{e(c["name"])}<span>{e(c["region"])}</span></a></li>'
+                    for c in CITIES if c["slug"] != exclude)
+    if exclude != RURAL[0]:
+        items += f'<li><a href="/test-and-tag/{RURAL[0]}/">{e(RURAL[1])}<span>Farms, orchards, remote sites</span></a></li>'
+    return f'<ul class="loc-grid">{items}</ul>'
+
+TT_FAQ_SHARED = [
+    ("How often does equipment need testing?", "It depends on the environment. Construction and hire equipment is usually tested every 3 months, factories and workshops every 6 months, and offices and other low-risk places every 12 months or longer. We’ll recommend the right interval for your site."),
+    ("How much does test &amp; tag cost?".replace("&amp;", "&"), "It depends on how many items you have and where they are. Tell us roughly how many items and where your site is, and we’ll send a fixed-price quote that includes any travel, usually within 2 hours."),
+    ("Do you provide certificates for audits?", "Yes. You’ll receive a full digital PDF register of every item tested, usually within 24 hours of the job."),
+]
+
+def tt_steps():
+    steps = [("Tell us what you’ve got", "Roughly how many items, where your site is, and any times that suit."),
+             ("Get a fixed quote", "One price that includes travel, so there are no surprises."),
+             ("We test on site", f"Our team or one of our partner technicians tests to {STANDARD}, around your hours."),
+             ("Get your register", "QR tags on every item, and your digital register usually within 24 hours.")]
+    lis = "".join(f'<li class="card reveal"><span class="step-num">{i + 1}</span><h3>{e(t)}</h3><p>{e(d)}</p></li>' for i, (t, d) in enumerate(steps))
+    return f"""<section class="section" aria-labelledby="tt-how"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">How it works</span><h2 id="tt-how">Simple, wherever you are.</h2>
+  <p>We’re based in Wellington and test right across New Zealand. Depending on where you are, we travel to you or send one of our partner technicians. Either way you get the same testing, tags and register.</p></div>
+  <ol class="grid grid-4 steps">{lis}</ol>
+</div></section>"""
+
 def test_tag():
-    hero, bld = page_hero([("Home", "/"), ("Test & Tag", None)], "Workplace electrical safety",
-        "Test &amp; tag for Wellington workplaces.",
-        "Electrical testing and tagging to AS/NZS 3760:2010, with QR-coded tags, RCD testing and a digital register you can show any auditor.",
-        badge='<span class="badge badge--gold">AS/NZS 3760:2010</span>')
+    hero, bld = page_hero([("Home", "/"), ("Test & Tag", None)], "Workplace electrical safety · NZ-wide",
+        "Test &amp; tag across New Zealand.",
+        f"Electrical testing and tagging to {STANDARD} for workplaces from Whangārei to Invercargill, with QR-coded tags, RCD testing and a digital register you can show any auditor.",
+        badge=f'<span class="badge badge--gold">{STANDARD}</span>')
     body_sec = f"""
 <section class="section" aria-labelledby="tt-what"><div class="wrap split">
   <div class="stack reveal"><span class="eyebrow">What’s included</span><h2 id="tt-what">Everything you need for compliance.</h2>
-    <p class="lead">Under the Health and Safety at Work Act, businesses must manage electrical risks. Regular testing and tagging to AS/NZS 3760:2010 is the accepted way to show you’re doing that.</p>
+    <p class="lead">Under the Health and Safety at Work Act, businesses must keep electrical equipment safe. Regular testing and tagging to {STANDARD} is the most common way to show you’re doing that.</p>
     <ul class="check-list">
-      <li>Inspection and testing to AS/NZS 3760:2010</li>
+      <li>Inspection and testing to {STANDARD}</li>
       <li>Single-phase and three-phase equipment, power tools, leads and appliances</li>
       <li>RCD (safety switch) trip-time and push-button testing with logs</li>
       <li>A QR-coded tag on every item for instant digital lookup</li>
@@ -504,34 +677,123 @@ def test_tag():
   </div>
   <div class="tag-illus reveal">{TAG_SVG}</div>
 </div></section>
+<section class="section section--sage" id="locations" aria-labelledby="tt-where"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Where we test</span><h2 id="tt-where">Test &amp; tag in every main centre.</h2>
+  <p>Choose your city to see what we do there. Not near a main centre? Our regional and rural service covers farms, orchards and remote sites anywhere in the country.</p></div>
+  {location_links()}
+</div></section>
+{tt_steps()}
 <section class="section section--sage" aria-labelledby="tt-who"><div class="wrap">
   <div class="section-head"><span class="eyebrow">Who we test for</span><h2 id="tt-who">From cafés to construction sites.</h2></div>
-  <ul class="chips"><li>Workshops &amp; factories</li><li>Construction sites</li><li>Offices</li><li>Cafés &amp; restaurants</li><li>Schools &amp; early learning</li><li>Retail stores</li><li>Rental properties</li><li>Community halls</li></ul>
+  <ul class="chips"><li>Workshops &amp; factories</li><li>Construction sites</li><li>Offices</li><li>Cafés &amp; restaurants</li><li>Schools &amp; early learning</li><li>Retail stores</li><li>Warehouses</li><li>Farms &amp; orchards</li><li>Hotels &amp; motels</li><li>Multi-site businesses</li><li>Rental properties</li><li>Community halls</li></ul>
   <div class="grid grid-3" style="margin-top:32px">
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("qr")}</div><h3>Smart QR tags</h3><p>Scan any tag to see its test history. No more hunting through paper logbooks.</p></div>
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("clock")}</div><h3>Around your hours</h3><p>Early starts before the tools come out, or quiet times so your customers aren’t disturbed.</p></div>
-    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("shield")}</div><h3>Faulty gear flagged</h3><p>Anything that fails is clearly tagged out of service, and we can repair or replace cords and leads on the spot.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("shield")}</div><h3>Faulty gear flagged</h3><p>Anything that fails is clearly tagged out of service and listed in your register, so you know what to repair or replace.</p></div>
   </div>
 </div></section>"""
     revs = "".join(review_card(r) for r in REVIEWS if r[2] == "Test & Tag")
     rev = f"""<section class="section" aria-labelledby="tt-rev"><div class="wrap"><div class="section-head"><span class="eyebrow">What clients say</span><h2 id="tt-rev">Trusted by local businesses.</h2></div><div class="grid grid-3">{revs}</div></div></section>"""
-    fq, fld = faq([
-        ("How often does equipment need testing?", "It depends on the environment. Construction and hire equipment is usually tested every 3 months, factories and workshops every 6 months, and offices and other low-risk places every 12 months or longer. We’ll recommend the right interval for your site."),
-        ("How much does test &amp; tag cost?".replace("&amp;", "&"), "It depends on how many items you have and where they are. Tell us roughly how many items and we’ll send a fixed-price quote, usually within 2 hours."),
-        ("Do you provide certificates for audits?", "Yes. You’ll receive a full digital PDF register of every item tested, usually within 24 hours of the job."),
+    fq, fld = faq(TT_FAQ_SHARED + [
+        ("Do you cover my area?", 'Yes. We test and tag across New Zealand. See the <a href="#locations">list of locations</a>, or if you’re rural or remote, our <a href="/test-and-tag/regional-rural-nz/">regional and rural page</a>.'),
+        ("Who does the testing outside Wellington?", f"Depending on where you are, we travel to you or send one of our partner technicians. Everyone tests to {STANDARD} and uses the same QR tags and digital register."),
+        ("Can you test sites in different cities?", "Yes. Tell us where your sites are and roughly how many items each one has. We’ll quote for them together and keep a separate register for each site."),
         ("How does the QR tagging work?", "Each item gets a tag with a unique QR code. Scan it with a phone to see when it was tested, the result and when the next test is due."),
         ("Do you test RCDs (safety switches)?", "Yes. We test portable and fixed RCDs for trip time and push-button operation, and record the results in your register."),
     ], title="Test & tag questions")
-    svc_ld = {"@context": "https://schema.org", "@type": "Service", "serviceType": "Electrical test and tag (AS/NZS 3760:2010)", "provider": {"@id": SITE + "/#business"}, "areaServed": "Greater Wellington"}
-    body = f"""<main id="main">{hero}{body_sec}{rev}{fq}{quote_section("Get a test & tag quote", "Let us know roughly how many items and where they are, and we’ll come back with a fixed price.")}</main>"""
-    write("/test-and-tag/", head("Test and Tag Wellington | AS/NZS 3760 | Midha Limited",
-        "AS/NZS 3760:2010 electrical test and tag for Wellington workplaces. QR tags, RCD testing and a digital register. Based in Wainuiomata.",
+    svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": "Test and tag", "serviceType": f"Electrical test and tag ({STANDARD})",
+              "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "Country", "name": "New Zealand"}}
+    body = f"""<main id="main">{hero}{body_sec}{rev}{fq}{quote_section("Get a test & tag quote", "Let us know roughly how many items and where they are, and we’ll come back with a fixed price.", default="test-tag")}</main>"""
+    write("/test-and-tag/", head(f"Test and Tag NZ | {STANDARD} | Midha Limited",
+        f"{STANDARD} test and tag for workplaces across NZ: Auckland, Hamilton, Tauranga, Wellington, Christchurch, Dunedin and more. QR tags, digital register.",
         "/test-and-tag/", [bld, fld, svc_ld]) + nav("/test-and-tag/") + body + footer())
+
+def city_page(c):
+    name = c["name"]
+    path = f"/test-and-tag/{c['slug']}/"
+    hero, bld = page_hero([("Home", "/"), ("Test & Tag", "/test-and-tag/"), (name, None)],
+        f"Test &amp; tag · {e(c['region'])}", f"Test and tag {e(name)}.", e(c["lead"]),
+        badge=f'<span class="badge badge--gold">{STANDARD}</span>')
+    intro = "".join(('<p class="lead">' if i == 0 else "<p>") + e(p) + "</p>" for i, p in enumerate(c["intro"]))
+    inds = "".join(f"<li>{e(x)}</li>" for x in c["industries"])
+    near = "".join(f"<li>{e(x)}</li>" for x in c["nearby"])
+    sec = f"""
+<section class="section" aria-labelledby="city-intro"><div class="wrap split">
+  <div class="stack reveal"><span class="eyebrow">Test &amp; tag in {e(name)}</span><h2 id="city-intro">Safe, tagged and audit-ready.</h2>
+    {intro}
+    <div class="btn-row" style="margin-top:8px"><a class="btn btn--primary" href="#quote" data-service="test-tag">Get your {e(name)} quote</a><a class="btn btn--light" href="tel:{TEL}">Call {PHONE}</a></div>
+  </div>
+  <div class="stack reveal">
+    <div class="card"><h3>Who we test for in {e(name)}</h3><ul class="chips">{inds}</ul></div>
+    <div class="card"><h3>Areas we cover</h3><ul class="chips">{near}</ul></div>
+  </div>
+</div></section>
+<section class="section section--sage" aria-labelledby="city-inc"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Every job includes</span><h2 id="city-inc">The same thorough service, wherever you are.</h2></div>
+  <div class="grid grid-3">
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("tag")}</div><h3>Tested to {STANDARD}</h3><p>Tools, appliances, leads and RCDs inspected and tested, with results recorded.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("qr")}</div><h3>QR tags &amp; digital register</h3><p>Every item gets a QR tag, and your PDF register usually arrives within 24 hours.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("dollar")}</div><h3>Fixed quote, travel included</h3><p>You know the full price before we book, with reminders before your retests are due.</p></div>
+  </div>
+</div></section>
+{tt_steps()}"""
+    fq, fld = faq(c["faqs"] + TT_FAQ_SHARED[:2], title=f"Test & tag in {name}: questions")
+    others = f"""<section class="section section--sage" aria-labelledby="city-more"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Other locations</span><h2 id="city-more">We also test and tag in…</h2></div>
+  {location_links(exclude=c['slug'])}
+</div></section>"""
+    svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": f"Test and tag {name}",
+              "serviceType": f"Electrical test and tag ({STANDARD})", "provider": {"@id": SITE + "/#business"},
+              "areaServed": {"@type": "City", "name": name.replace(" & ", " and "), "containedInPlace": {"@type": "AdministrativeArea", "name": c["region"]}},
+              "url": SITE + path}
+    body = f"""<main id="main">{hero}{sec}{fq}{others}{quote_section(f"Get a test & tag quote for {name}", "Tell us roughly how many items and where your site is, and we’ll send a fixed price that includes travel.", default="test-tag")}</main>"""
+    desc = f"Test and tag in {name} to {STANDARD}. {c['industries'][0]}, {c['industries'][1].lower()} and more. QR tags, RCD testing, digital register, fixed quotes."
+    write(path, head(f"Test and Tag {name} | {STANDARD} | Midha Limited", desc, path, [bld, fld, svc_ld])
+          + nav(path) + body + footer())
+
+def rural_page():
+    path = f"/test-and-tag/{RURAL[0]}/"
+    hero, bld = page_hero([("Home", "/"), ("Test & Tag", "/test-and-tag/"), (RURAL[1], None)],
+        "Test &amp; tag · anywhere in NZ", "Test and tag for regional and rural New Zealand.",
+        f"Farms, orchards, vineyards, rural schools, marae and remote work sites, tested to {STANDARD} with QR tags and a digital register.",
+        badge=f'<span class="badge badge--gold">{STANDARD}</span>')
+    who = "".join(f"<li>{e(x)}</li>" for x in ["Farms & dairy sheds", "Orchards & packhouses", "Vineyards & wineries", "Shearing sheds & woolsheds", "Rural schools", "Marae", "Community & sports halls", "Holiday parks", "Remote work sites", "Rural contractors"])
+    regions = "".join(f"<li>{e(x)}</li>" for x in NZ_REGIONS)
+    sec = f"""
+<section class="section" aria-labelledby="rural-intro"><div class="wrap split">
+  <div class="stack reveal"><span class="eyebrow">Not near a main centre?</span><h2 id="rural-intro">We still come to you.</h2>
+    <p class="lead">Rural and remote sites get the same testing, QR tags and digital register as a city office. We plan visits to each region in advance, and your fixed quote includes travel.</p>
+    <p>Farm gear and rural workplaces are tough on equipment. Leads get dragged through sheds and paddocks, tools get wet, and plugs take a beating. Regular testing finds damaged cords and faulty gear before they hurt someone.</p>
+    <div class="btn-row" style="margin-top:8px"><a class="btn btn--primary" href="#quote" data-service="test-tag">Get a rural quote</a><a class="btn btn--light" href="tel:{TEL}">Call {PHONE}</a></div>
+  </div>
+  <div class="stack reveal">
+    <div class="card"><h3>Who we test for</h3><ul class="chips">{who}</ul></div>
+    <div class="card"><h3>Regions we cover</h3><ul class="chips">{regions}</ul></div>
+  </div>
+</div></section>
+{tt_steps()}"""
+    fq, fld = faq([
+        ("How much does travel to a rural site cost?", "Travel is included in your fixed quote, so you’ll know the full price before you book."),
+        ("What do you need to know to quote?", "Where your site is, roughly how many items need testing, and any timing that suits you, such as before harvest, calving or a new season starts."),
+        ("Can neighbouring farms or businesses book together?", "Yes. If you know others nearby who need testing, let us know and we’ll quote for the visits together."),
+    ] + TT_FAQ_SHARED[:1], title="Rural test & tag questions")
+    others = f"""<section class="section section--sage" aria-labelledby="rural-more"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Main centres</span><h2 id="rural-more">Near a city? See your local page.</h2></div>
+  {location_links(exclude=RURAL[0])}
+</div></section>"""
+    svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": "Rural test and tag New Zealand",
+              "serviceType": f"Electrical test and tag ({STANDARD})", "provider": {"@id": SITE + "/#business"},
+              "areaServed": {"@type": "Country", "name": "New Zealand"}, "url": SITE + path}
+    body = f"""<main id="main">{hero}{sec}{fq}{others}{quote_section("Get a rural test & tag quote", "Tell us where you are and roughly how many items need testing.", default="test-tag")}</main>"""
+    write(path, head(f"Rural Test and Tag NZ | Farms, Orchards & Remote Sites | Midha",
+        f"{STANDARD} test and tag for farms, orchards, vineyards, rural schools, marae and remote sites anywhere in New Zealand. Fixed quotes with travel included.",
+        path, [bld, fld, svc_ld]) + nav(path) + body + footer())
 
 def electrical():
     hero, bld = page_hero([("Home", "/"), ("Electrical Services", None)], "Electrical services",
         "Lighting, power points and repairs, done tidily.",
         "Light installations, LED downlights, security and sensor lights, new power points, and cord and lead repairs for homes and businesses across Greater Wellington.")
+    hero = hero.replace('<span class="eyebrow">Electrical services</span>', '<span class="eyebrow">Electrical services · Greater Wellington</span>')
     items = [
         ("bulb", "Light installations", "New light fittings, pendants and replacements for tired or broken lights, inside and out."),
         ("bolt", "LED downlights", "Swap old halogens for energy-efficient LED downlights that run cooler and cost less to run."),
@@ -558,31 +820,32 @@ def electrical():
         ("Can you switch my old downlights to LED?", "Yes. LED downlights use far less power and run cooler than halogens. We’ll quote for the number of lights you want changed."),
         ("How do I get a price?", 'Fill in the quote form or call <a href="tel:' + TEL + '">' + PHONE + '</a> with a quick description and a photo if you can. We’ll come back with a fixed price.'),
     ], title="Electrical questions")
-    body = f"""<main id="main">{hero}{sec}{fq}{quote_section("Get an electrical quote", "Tell us what you’d like done, and add a photo by email if it helps.")}</main>"""
+    body = f"""<main id="main">{hero}{sec}{fq}{quote_section("Get an electrical quote", "Tell us what you’d like done, and add a photo by email if it helps.", default="electrical")}</main>"""
     write("/electrical-services/", head("Electrical Services Wellington | Lighting & Power Points | Midha",
         "Light installations, LED downlights, security and sensor lights, power points and cord repairs across Lower Hutt, Upper Hutt and Wellington.",
-        "/electrical-services/", [bld, fld]) + nav("/electrical-services/") + body + footer())
+        "/electrical-services/", [bld, fld, {"@context": "https://schema.org", "@type": "Service", "name": "Electrical services", "serviceType": "Lighting, power points and cord repairs",
+            "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "AdministrativeArea", "name": "Wellington Region"}}]) + nav("/electrical-services/") + body + footer())
 
 def areas_page():
-    hero, bld = page_hero([("Home", "/"), ("Service Areas", None)], "Where we work", "Proudly serving Greater Wellington.",
-        "Based in Wainuiomata and covering the Hutt Valley, Wellington’s northern suburbs and Porirua, with no hidden travel charges.")
+    hero, bld = page_hero([("Home", "/"), ("Service Areas", None)], "Heat pump cleaning &amp; electrical · Greater Wellington", "Heat pump and electrical service areas.",
+        'Heat pump cleaning and electrical work cover the Hutt Valley, Wellington’s northern suburbs and Porirua from our base in Wainuiomata. Need test &amp; tag? We cover <a href="/test-and-tag/#locations">all of New Zealand</a>.')
     cards = "".join(f"""<article class="card area-card reveal" id="{slug(n)}"><h2 style="font-size:var(--fs-h3)">{e(n)}</h2><span class="badge badge--soft">{e(sp)}</span><p>{e(d)}</p><ul>{''.join(f'<li>{e(s)}</li>' for s in subs)}</ul>
 <a class="more" href="/contact/#quote">Book in {e(n.split(' &')[0])} →</a></article>""" for n, sp, d, subs in AREAS)
     sec = f"""<section class="section section--sage"><div class="wrap"><div class="grid grid-3">{cards}</div>
 <p class="note" style="margin-top:24px">Typical booking times shown. Urgent callouts are available. Just call {PHONE}.</p></div></section>"""
     body = f"""<main id="main">{hero}{sec}{quote_section()}</main>"""
-    write("/service-areas/", head("Service Areas | Wainuiomata, Hutt Valley, Tawa, Porirua | Midha Limited",
-        "Midha Limited covers Wainuiomata, Lower Hutt, Upper Hutt, Tawa, Newlands, Porirua and Greater Wellington for test & tag, heat pump and electrical work.",
+    write("/service-areas/", head("Heat Pump & Electrical Areas | Hutt Valley & Porirua | Midha",
+        "Heat pump cleaning and electrical work in Wainuiomata, Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua. Test & tag is available across New Zealand.",
         "/service-areas/", [bld]) + nav("/service-areas/") + body + footer())
 
 def reviews_page():
     hero, bld = page_hero([("Home", "/"), ("Reviews", None)], "5.0 Google rating", "What our customers say.",
-        "Feedback from property managers, workshop supervisors and homeowners across Greater Wellington.")
+        "Feedback from business owners, site managers and homeowners across Greater Wellington.")
     cards = "".join(review_card(r) for r in REVIEWS)
     sec = f"""<section class="section section--sage"><div class="wrap"><div class="grid grid-3">{cards}</div></div></section>"""
     body = f"""<main id="main">{hero}{sec}{quote_section("Experience it for yourself")}</main>"""
     write("/reviews/", head("Customer Reviews | Midha Limited Wellington",
-        "Read reviews from Wellington homeowners, landlords and businesses who use Midha Limited for test & tag, heat pump cleaning and electrical work.",
+        "Read reviews from Wellington homeowners and businesses who use Midha Limited for test & tag, heat pump cleaning and electrical work.",
         "/reviews/", [bld]) + nav("/reviews/") + body + footer())
 
 def about_page():
@@ -592,7 +855,7 @@ def about_page():
 <section class="section"><div class="wrap split">
   <div class="stack reveal"><span class="eyebrow">Our story</span><h2>Safety, reliability and clean air.</h2>
     <p class="lead">Midha Limited started with a simple idea: every Kiwi workplace and home deserves reliable safety compliance and heating care, without red tape or hidden fees.</p>
-    <p>Based in Wainuiomata and working right across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua, we combine careful technical work with friendly, approachable service.</p>
+    <p>Based in Wainuiomata, we look after heat pumps and electrical work across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua, and test and tag workplaces right across New Zealand. We combine careful technical work with friendly, approachable service.</p>
     <p class="note">Midha Limited is a registered New Zealand company. NZBN {NZBN}.</p>
   </div>
   <div class="split-media reveal">{pic("indoor-coil-clean", "Midha technician cleaning an indoor heat pump coil")}</div>
@@ -607,25 +870,27 @@ def about_page():
 </div></section>"""
     body = f"""<main id="main">{hero}{sec}{quote_section()}</main>"""
     write("/about/", head("About Midha Limited | Wainuiomata, Wellington",
-        "Midha Limited is a 100% Kiwi-owned business in Wainuiomata providing test & tag, heat pump cleaning and electrical services across Greater Wellington.",
+        "Midha Limited is a Kiwi-owned business in Wainuiomata: test & tag across New Zealand, plus heat pump cleaning and electrical work in Greater Wellington.",
         "/about/", [bld]) + nav("/about/") + body + footer())
 
 def contact_page():
     hero, bld = page_hero([("Home", "/"), ("Contact", None)], "Reply within 2 hours", "Contact Midha Limited",
         f"Call or text {PHONE}, email {EMAIL}, or send the form below. We’re available {HOURS}, with urgent callouts available.", ctas=False)
     zone = f"""<section class="section section--sage"><div class="wrap split">
-  <div class="stack"><span class="eyebrow">Our base</span><h2>Our Greater Wellington service zone.</h2>
-  <p class="lead">Based in Wainuiomata, covering Petone, Gracefield, Epuni, Waterloo, Silverstream, Trentham, Tawa, Newlands, Johnsonville and Porirua.</p></div>
+  <div class="stack"><span class="eyebrow">Our base</span><h2>Where we work.</h2>
+  <p class="lead">Heat pump cleaning and electrical work: Wainuiomata, Petone, Gracefield, Epuni, Waterloo, Silverstream, Trentham, Tawa, Newlands, Johnsonville and Porirua.</p>
+  <p>Test &amp; tag: anywhere in New Zealand. <a href="/test-and-tag/#locations">See test &amp; tag locations</a>.</p></div>
   <ul class="chips"><li>No travel surcharge in Wainuiomata</li><li>Same day / next day in Wainui</li><li>After-hours slots for businesses</li><li>Urgent callouts available</li></ul>
 </div></section>"""
     body = f"""<main id="main">{hero}{quote_section("Book a service or request a quote", "Annual test & tag, a heat pump clean or an electrical job? Tell us what you need.")}{zone}</main>"""
     write("/contact/", head("Contact Midha Limited | Book Test & Tag, Heat Pump or Electrical",
-        f"Get a free, fixed-price quote. Call {PHONE} or email {EMAIL}. Serving Wainuiomata, the Hutt Valley, Tawa, Newlands and Porirua.",
+        f"Get a free, fixed-price quote. Call {PHONE} or email {EMAIL}. Test & tag across New Zealand; heat pumps and electrical in Greater Wellington.",
         "/contact/", [bld]) + nav("/contact/") + body + footer())
 
 def simple(path, title, desc, h1, inner, robots=None):
     hd = head(title, desc, path)
     if robots: hd = hd.replace("<link rel=\"canonical\"", f'<meta name="robots" content="{robots}">\n<link rel="canonical"')
+    if path == "/thanks/": hd = hd.replace("<body>", "<body data-thanks>")
     write(path, hd + nav(path) + f'<main id="main"><section class="page-hero"><div class="wrap"><h1>{h1}</h1></div></section><section class="section" style="padding-top:0"><div class="wrap prose">{inner}</div></section></main>' + footer())
 
 def misc():
@@ -635,7 +900,8 @@ def misc():
            f"""<p>We collect the details you give us in our quote form, by phone or by email (such as your name, phone number, email, suburb and job details) so we can reply to you, quote and carry out your job.</p>
 <p>We don’t sell or share your details with anyone else, except service providers that help us run the business (such as our email and form provider), and only as needed.</p>
 <p>Under the Privacy Act 2020, you can ask to see or correct the information we hold about you. Email <a href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p>
-<h2>Website analytics</h2><p>If we use privacy-friendly website analytics (such as Cloudflare Web Analytics), it counts visits without cookies and doesn’t identify you.</p>""")
+<h2>Website analytics</h2><p>If we use privacy-friendly website analytics (such as Cloudflare Web Analytics), it counts visits without cookies and doesn’t identify you.</p>
+<h2>Advertising</h2><p>If we advertise on Google, our website may use Google’s advertising tag. It sets cookies that tell us when someone who clicked one of our ads sends a quote request or taps to call us, so we know which ads are useful. It doesn’t give us your name or contact details. You can manage Google ad settings at <a href="https://myadcenter.google.com/" rel="noopener">myadcenter.google.com</a>.</p>""")
     simple("/404.html", "Page not found | Midha Limited", "Page not found.", "Sorry, we can’t find that page.",
            f'<p class="lead">Try one of these instead:</p><ul class="chips"><li><a href="/heat-pump-cleaning/">Heat pump cleaning</a></li><li><a href="/test-and-tag/">Test &amp; tag</a></li><li><a href="/electrical-services/">Electrical services</a></li><li><a href="/contact/">Contact</a></li></ul>', robots="noindex")
 
@@ -664,6 +930,8 @@ def cloudflare_files():
 /heat-pump           /heat-pump-cleaning/   301
 /heat-pumps          /heat-pump-cleaning/   301
 /test-tag            /test-and-tag/         301
+/test-and-tag-nz     /test-and-tag/         301
+/locations           /test-and-tag/#locations 302
 /electrical          /electrical-services/  301
 /about-us            /about/                301
 /contact-us          /contact/              301
@@ -671,7 +939,8 @@ def cloudflare_files():
 """)
     with open(os.path.join(OUT, "robots.txt"), "w") as f:
         f.write(f"User-agent: *\nAllow: /\nDisallow: /thanks/\n\nSitemap: {SITE}/sitemap.xml\n")
-    urls = ["/", "/heat-pump-cleaning/", "/test-and-tag/", "/electrical-services/", "/service-areas/", "/reviews/", "/about/", "/contact/", "/privacy/"]
+    urls = (["/", "/test-and-tag/"] + [f"/test-and-tag/{c['slug']}/" for c in CITIES] + [f"/test-and-tag/{RURAL[0]}/"]
+            + ["/heat-pump-cleaning/", "/electrical-services/", "/service-areas/", "/reviews/", "/about/", "/contact/", "/privacy/"])
     with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for u in urls:
@@ -684,5 +953,5 @@ def cloudflare_files():
                              {"src": "/assets/img/logo-512.png", "sizes": "512x512", "type": "image/png"}]}, f, indent=2)
 
 if __name__ == "__main__":
-    home(); heat_pump(); test_tag(); electrical(); areas_page(); reviews_page(); about_page(); contact_page(); misc(); cloudflare_files()
+    home(); heat_pump(); test_tag(); [city_page(c) for c in CITIES]; rural_page(); electrical(); areas_page(); reviews_page(); about_page(); contact_page(); misc(); cloudflare_files()
     print("built", OUT)
