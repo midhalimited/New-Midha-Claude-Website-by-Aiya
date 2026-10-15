@@ -10,7 +10,6 @@ SITE = "https://midha.co.nz"
 PHONE = "022 407 8603"
 TEL = "+64224078603"
 EMAIL = "midhalimited@gmail.com"
-NZBN = "9429051638016"
 HOURS = "Mon–Sat 7:30am–6:00pm"
 TODAY = datetime.date(2026, 10, 15).isoformat()
 STANDARD = "AS/NZS 3760:2022"
@@ -247,7 +246,6 @@ def head(title, desc, path, extra_ld=None):
         "areaServed": [{"@type": "Country", "name": "New Zealand"}, {"@type": "AdministrativeArea", "name": "Wellington Region"}],
         "openingHoursSpecification": [{"@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "07:30", "closes": "18:00"}],
-        "identifier": {"@type": "PropertyValue", "propertyID": "NZBN", "value": NZBN},
     }]
     if extra_ld: ld += extra_ld
     return f"""<!doctype html>
@@ -323,7 +321,7 @@ def footer():
       <div class="footer-brand">
         <a class="brand" href="/"><img src="/assets/img/logo-96.png" width="48" height="48" alt=""><span class="brand-name"><strong>Midha Limited</strong></span></a>
         <p>Test &amp; tag for workplaces across New Zealand. Heat pump cleaning and electrical services for homes and businesses in Greater Wellington. Based in Wainuiomata.</p>
-        <p class="footer-small">NZBN {NZBN}<br>100% NZ owned &amp; operated</p>
+        <p class="footer-small">100% NZ owned &amp; operated</p>
       </div>
       <div><h2>Services</h2><ul>{services}<li><a href="/heat-pump-cleaning/#healthy-homes">Healthy Homes heating</a></li><li><a href="/service-areas/">Wellington service areas</a></li></ul></div>
       <div><h2>Test &amp; tag NZ</h2><ul>{areas}<li><a href="/test-and-tag/#locations">All locations</a></li></ul></div>
@@ -856,7 +854,7 @@ def about_page():
   <div class="stack reveal"><span class="eyebrow">Our story</span><h2>Safety, reliability and clean air.</h2>
     <p class="lead">Midha Limited started with a simple idea: every Kiwi workplace and home deserves reliable safety compliance and heating care, without red tape or hidden fees.</p>
     <p>Based in Wainuiomata, we look after heat pumps and electrical work across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua, and test and tag workplaces right across New Zealand. We combine careful technical work with friendly, approachable service.</p>
-    <p class="note">Midha Limited is a registered New Zealand company. NZBN {NZBN}.</p>
+    <p class="note">Midha Limited is a registered New Zealand company.</p>
   </div>
   <div class="split-media reveal">{pic("indoor-coil-clean", "Midha technician cleaning an indoor heat pump coil")}</div>
 </div></section>

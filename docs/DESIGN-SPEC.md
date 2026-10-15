@@ -7,7 +7,7 @@ Built as a static site for Cloudflare Pages (see `DEPLOY-TO-CLOUDFLARE.md`).
 
 | Topic | Decision | Source |
 |---|---|---|
-| Business | Midha Limited, Wainuiomata. NZBN 9429051638016. 022 407 8603. midhalimited@gmail.com. Mon–Sat 7:30am–6:00pm | Blueprint, confirmed |
+| Business | Midha Limited, Wainuiomata. 022 407 8603. midhalimited@gmail.com. Mon–Sat 7:30am–6:00pm | Blueprint, confirmed |
 | Services | Three separate lines: **Test & Tag**, **Heat Pump Cleaning**, **Electrical Services** | Client |
 | AS/NZS 3760:2022 | Shown on Test & Tag content only, never as a business-wide badge (updated from 2010 on 15 Oct 2026) | Client |
 | Heat pump packages | Pro $79, Elite $129 (Most popular), Comprehensive $189. Per heat pump, GST incl. | Client |
@@ -59,7 +59,7 @@ Built as a static site for Cloudflare Pages (see `DEPLOY-TO-CLOUDFLARE.md`).
 
 **Primary nav:** Services ▾ (Test & Tag, Heat Pump Cleaning, Electrical Services) · Service areas ▾ · Reviews · About · Contact · phone · **Get a quote**.
 **Mobile:** hamburger opens a full-width panel; floating Call / Get a quote bar is fixed at the bottom.
-**Footer:** brand + NZBN, Services, Service areas, Get in touch, Privacy.
+**Footer:** brand, Services, Service areas, Get in touch, Privacy.
 **Redirects:** `/services` → `/heat-pump-cleaning/` and other old addresses (see `_redirects`).
 
 ## E. User journeys and conversion
@@ -261,3 +261,4 @@ The matching CSS custom properties are at the top of `site/assets/css/styles.css
 - **Healthy Homes:** removed from the quote form and its two reviews removed (6 reviews remain). The Heat Pump page card and footer link stay.
 - **SEO/Ads:** Service schema per page (NZ / Wellington Region / City), new titles and descriptions, sitemap with all city pages, Google Ads tracking ready (off until an ID is added), privacy page covers Google's ad tag.
 - **Fix:** the "Heat Pump Cleaning" title on the dark home-page card was invisible (dark on dark).
+- **NZBN removed** from the footer, About page and Google data (client: the number was wrong and isn't needed).
