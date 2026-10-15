@@ -1,0 +1,10 @@
+# Old page addresses -> new pages (301 = permanent)
+/services            /heat-pump-cleaning/   301
+/services/           /heat-pump-cleaning/   301
+/heat-pump           /heat-pump-cleaning/   301
+/heat-pumps          /heat-pump-cleaning/   301
+/test-tag            /test-and-tag/         301
+/electrical          /electrical-services/  301
+/about-us            /about/                301
+/contact-us          /contact/              301
+/book                /contact/#quote        302
