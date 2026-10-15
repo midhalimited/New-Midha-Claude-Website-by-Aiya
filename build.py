@@ -335,7 +335,7 @@ def footer():
     </div>
     <div class="footer-bottom">
       <span>© <span id="year">2026</span> Midha Limited. All rights reserved.</span>
-      <span><a href="/privacy/">Privacy</a> · <a href="/about/">About</a> · <a href="/reviews/">Reviews</a> · <a href="/contact/">Contact</a></span>
+      <span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/giveaway-terms/">Giveaway terms</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a></span>
     </div>
   </div>
 </footer>
@@ -395,7 +395,7 @@ def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need 
       </div>
       <div class="form-status" role="status" aria-live="polite"></div>
       <ul class="seals"><li><span class="tick">✓</span>Fixed price</li><li><span class="tick">✓</span>No obligation</li><li><span class="tick">✓</span>Your details stay private</li></ul>
-      <p class="form-note">* Required. We only use your details to reply to you. See our <a href="/privacy/">privacy note</a>.</p>
+      <p class="form-note">* Required. We only use your details to reply to you and do your job. See our <a href="/privacy/">privacy policy</a>.</p>
     </form>
   </div>
 </div></section>"""
@@ -609,7 +609,7 @@ def heat_pump():
     <p>To enter, go to our giveaway post on Facebook and:</p>
     <ul class="check-list"><li>Like the post</li><li>Tag 3 friends in Wellington in the comments</li><li>Live in the Wellington region</li></ul>
     <div class="btn-row"><a class="btn btn--primary" href="{e(FB_POST)}" target="_blank" rel="noopener">Enter on Facebook <span class="visually-hidden">(opens in a new tab)</span></a></div>
-    <p class="note">This giveaway is run by Midha Limited and isn’t sponsored or run by Facebook.</p>
+    <p class="note">Free to enter. 18+ Wellington region residents only. <a href="/giveaway-terms/">Full terms and conditions</a>. This giveaway is run by Midha Limited and isn’t sponsored or run by Facebook.</p>
   </div>
 </div></section>"""
     fq, fld = faq([
@@ -889,17 +889,124 @@ def simple(path, title, desc, h1, inner, robots=None):
     hd = head(title, desc, path)
     if robots: hd = hd.replace("<link rel=\"canonical\"", f'<meta name="robots" content="{robots}">\n<link rel="canonical"')
     if path == "/thanks/": hd = hd.replace("<body>", "<body data-thanks>")
-    write(path, hd + nav(path) + f'<main id="main"><section class="page-hero"><div class="wrap"><h1>{h1}</h1></div></section><section class="section" style="padding-top:0"><div class="wrap prose">{inner}</div></section></main>' + footer())
+    write(path, hd + nav(path) + f'<main id="main"><section class="page-hero"><div class="wrap"><h1>{h1}</h1></div></section><section class="section" style="padding-top:0"><div class="wrap"><div class="prose">{inner}</div></div></section></main>' + footer())
 
 def misc():
     simple("/thanks/", "Thanks | Midha Limited", "Thanks for your enquiry.", "Thanks, we’ve got your request.",
            f'<p class="lead">We’ll be in touch within 2 hours during business hours ({HOURS}). If it’s urgent, call <a href="tel:{TEL}">{PHONE}</a>.</p><p><a class="btn btn--primary" href="/">Back to home</a></p>', robots="noindex")
-    simple("/privacy/", "Privacy | Midha Limited", "How Midha Limited handles your personal information.", "Privacy note",
-           f"""<p>We collect the details you give us in our quote form, by phone or by email (such as your name, phone number, email, suburb and job details) so we can reply to you, quote and carry out your job.</p>
-<p>We don’t sell or share your details with anyone else, except service providers that help us run the business (such as our email and form provider), and only as needed.</p>
-<p>Under the Privacy Act 2020, you can ask to see or correct the information we hold about you. Email <a href="mailto:{EMAIL}">{EMAIL}</a> or call {PHONE}.</p>
-<h2>Website analytics</h2><p>If we use privacy-friendly website analytics (such as Cloudflare Web Analytics), it counts visits without cookies and doesn’t identify you.</p>
-<h2>Advertising</h2><p>If we advertise on Google, our website may use Google’s advertising tag. It sets cookies that tell us when someone who clicked one of our ads sends a quote request or taps to call us, so we know which ads are useful. It doesn’t give us your name or contact details. You can manage Google ad settings at <a href="https://myadcenter.google.com/" rel="noopener">myadcenter.google.com</a>.</p>""")
+    updated = "15 October 2026"
+    contact = f'<a href="mailto:{EMAIL}">{EMAIL}</a> or {PHONE}'
+    simple("/privacy/", "Privacy Policy | Midha Limited", "How Midha Limited collects, uses, shares and protects your personal information under the New Zealand Privacy Act 2020.", "Privacy policy",
+           f"""<p class="note">Last updated {updated}</p>
+<p class="lead">Midha Limited (“we”, “us”) respects your privacy. This policy explains what personal information we collect, why, who we share it with, and your rights under the New Zealand Privacy Act 2020.</p>
+<h2>Who we are</h2>
+<p>Midha Limited is a New Zealand company based in Wainuiomata, Lower Hutt. We provide test &amp; tag across New Zealand, and heat pump cleaning and electrical services in the Wellington region. For anything about your personal information, contact our privacy officer at {contact}.</p>
+<h2>What we collect</h2>
+<ul>
+  <li><strong>When you ask for a quote or book a job:</strong> your name, phone number, email, suburb or town, the service you need and any job details you give us.</li>
+  <li><strong>When we do the job:</strong> the site address, an on-site contact person, access details, and job records such as test &amp; tag registers, test results, photos of the equipment or heat pump, and invoices.</li>
+  <li><strong>When you call, text or email us:</strong> your message and contact details.</li>
+  <li><strong>When you enter our giveaway:</strong> your Facebook name and what you post on the giveaway post. If you win, we ask for your contact details and the address of the heat pump to be cleaned.</li>
+  <li><strong>When you visit our website:</strong> basic technical information such as your IP address, browser type and the pages you visit, which our hosting provider uses to keep the site running and secure.</li>
+</ul>
+<p>You don’t have to give us your details, but without a phone number or email we can’t reply to you, and without a site address we can’t do the job.</p>
+<h2>Information we get from other people</h2>
+<p>Sometimes we get your details from someone else, such as your employer or site manager when they book test &amp; tag, a landlord or property manager who books a heat pump clean and gives us a tenant’s contact for access, a person who refers you to us, or Facebook when you enter our giveaway. We only use these details to arrange and do the job, or to run the giveaway. When we contact you, we’ll tell you who we are and why we have your details, unless you already know.</p>
+<h2>How we use it</h2>
+<ul>
+  <li>To reply to you, quote, book and carry out the job.</li>
+  <li>To prepare test &amp; tag registers and remind you when retests are due.</li>
+  <li>To invoice you and keep business and tax records.</li>
+  <li>To run the giveaway and contact the winner.</li>
+  <li>To keep our website working and secure, and, if we advertise, to see which ads lead to enquiries.</li>
+</ul>
+<p>We won’t send you marketing emails or texts unless you’ve agreed to them, and every marketing message will let you unsubscribe.</p>
+<h2>Who we share it with</h2>
+<p>We never sell your personal information. We only share it when we need to:</p>
+<ul>
+  <li><strong>Partner technicians</strong> who carry out test &amp; tag jobs for us outside the Wellington region. They get only what they need to do your job, such as the site address, contact person and equipment details.</li>
+  <li><strong>Service providers</strong> who help us run the business: our email provider (Google), our website host (Cloudflare), our website form provider (Formspree), our font provider (Fontshare), and our accountant. If we advertise on Google, Google also receives information about ad clicks, as explained below.</li>
+  <li><strong>Meta (Facebook)</strong>, which runs the platform our giveaway takes place on.</li>
+  <li>Anyone we’re required to share it with by law.</li>
+</ul>
+<h2>Information stored overseas</h2>
+<p>Some of our service providers store information outside New Zealand, mainly in the United States. We use well-known providers with strong security, and we only use them to store and process information for us, not for their own purposes.</p>
+<h2>Cookies and advertising</h2>
+<p>Our website doesn’t use cookies to track you. If we advertise on Google, our website may use Google’s advertising tag. It sets cookies that tell us when someone who clicked one of our ads sends a quote request or taps to call us, so we know which ads are useful. It doesn’t give us your name or contact details. You can manage Google ad settings at <a href="https://myadcenter.google.com/" rel="noopener">myadcenter.google.com</a>.</p>
+<h2>How we keep it safe</h2>
+<p>We keep personal information in password-protected accounts, limit who can see it, and only keep it as long as we need it. Job and invoice records are kept for at least 7 years, because New Zealand tax law requires it. Quote enquiries that don’t go ahead are deleted when we no longer need them.</p>
+<p>If a privacy breach happens that is likely to cause serious harm, we’ll tell the people affected and the Privacy Commissioner as soon as we can.</p>
+<h2>Your rights</h2>
+<p>You can ask to see the personal information we hold about you, and ask us to correct it if it’s wrong. Contact us at {contact}. We’ll respond within 20 working days and won’t charge you to see your information.</p>
+<p>If you’re not happy with how we’ve handled your information, please tell us first so we can put it right. You can also complain to the Office of the Privacy Commissioner at <a href="https://www.privacy.org.nz" rel="noopener">privacy.org.nz</a> or 0800 803 909.</p>
+<h2>Changes to this policy</h2>
+<p>We may update this policy from time to time. The date at the top shows when it last changed.</p>""")
+    simple("/terms/", "Terms of Use | Midha Limited", "Terms for using the Midha Limited website, our quotes and prices, the mould-free guarantee, and test & tag results.", "Website terms",
+           f"""<p class="note">Last updated {updated}</p>
+<p class="lead">These terms apply when you use the Midha Limited website. Please read them along with our <a href="/privacy/">privacy policy</a>.</p>
+<h2>Information on this website</h2>
+<p>We work hard to keep this website accurate and up to date, but it gives general information only. It isn’t a quote or professional advice for your situation. Contact us for a quote based on your job.</p>
+<h2>Prices and quotes</h2>
+<ul>
+  <li>Prices are in New Zealand dollars and include GST.</li>
+  <li>Heat pump cleaning prices are per heat pump.</li>
+  <li>A quote is based on the information you give us. If the job turns out to be different from what was described, we’ll talk to you before doing any extra work.</li>
+  <li>We may change our prices at any time. A change won’t affect a quote we’ve already given you.</li>
+</ul>
+<h2>Mould-free guarantee</h2>
+<p>The 3-month mould-free guarantee applies to our Comprehensive Clean. If mould comes back on the cleaned heat pump within 3 months of the clean, contact us within that time and we’ll re-clean that heat pump for free.</p>
+<h2>Test &amp; tag results</h2>
+<p>A test &amp; tag result shows the condition of an item on the day it was tested. It can’t guarantee the item will stay safe afterwards. Between tests, equipment owners should check their gear before use and stop using anything that is damaged. Faults should only be repaired by someone qualified to do so.</p>
+<h2>Your consumer rights</h2>
+<p>Nothing in these terms limits your rights under the Consumer Guarantees Act 1993 or the Fair Trading Act 1986. If you buy our services for business purposes, the Consumer Guarantees Act does not apply, as allowed by section 43 of that Act.</p>
+<h2>Our liability</h2>
+<p>As far as the law allows, we’re not responsible for indirect loss, such as lost profits or business interruption, that comes from using this website or our services.</p>
+<h2>Other websites</h2>
+<p>Our website links to other sites, such as Facebook. We don’t control those sites and aren’t responsible for their content or how they handle your information.</p>
+<h2>Our content</h2>
+<p>The text, photos and logo on this website belong to Midha Limited. Please don’t copy them without our permission.</p>
+<h2>New Zealand law</h2>
+<p>These terms are governed by New Zealand law.</p>
+<h2>Contact</h2>
+<p>Questions about these terms? Contact us at {contact}.</p>""")
+    simple("/giveaway-terms/", "Giveaway Terms | Win a Free Pro Clean | Midha Limited", "Terms and conditions for the Midha Limited free Pro Clean giveaway, drawn every 3 months for Wellington region residents.", "Giveaway terms and conditions",
+           f"""<p class="note">Last updated {updated}</p>
+<p class="lead">These terms apply to the Midha Limited “Win a free Pro Clean” giveaway. By entering, you agree to them.</p>
+<h2>Promoter</h2>
+<p>The promoter is Midha Limited, Wainuiomata, Lower Hutt. Contact {contact}.</p>
+<h2>The prize</h2>
+<ul>
+  <li>Each draw has one prize: a free Pro Clean (valued at $79 including GST) for one heat pump at a home in the Wellington region.</li>
+  <li>The prize can’t be exchanged for cash or transferred to someone else.</li>
+  <li>The Pro Clean must be booked within 3 months of the draw, at a time that suits both the winner and Midha Limited.</li>
+</ul>
+<h2>Who can enter</h2>
+<ul>
+  <li>You must be 18 or older and live in the Wellington region, with a heat pump at your home in the region.</li>
+  <li>Midha Limited staff, partner technicians and their immediate families can’t enter.</li>
+  <li>One entry per person per draw.</li>
+</ul>
+<h2>How to enter</h2>
+<p>Entry is free and you don’t need to buy anything. To enter, follow the steps in our giveaway post on Facebook during the draw period.</p>
+<h2>Draw periods and draws</h2>
+<ul>
+  <li>The giveaway runs in 3-month periods ending on 31 March, 30 June, 30 September and 31 December.</li>
+  <li>The winner for each period is drawn at random from all valid entries received during that period. The draw takes place within 5 working days after the period ends.</li>
+  <li>Entries don’t carry over to the next period.</li>
+</ul>
+<h2>Winners</h2>
+<ul>
+  <li>We’ll contact the winner through Facebook. If the winner doesn’t reply within 7 days, or isn’t eligible, we’ll draw another winner.</li>
+  <li>With the winner’s permission, we may share their first name and suburb on our website or Facebook page.</li>
+</ul>
+<h2>Your information</h2>
+<p>We only use entrants’ information to run the giveaway and contact the winner. See our <a href="/privacy/">privacy policy</a>.</p>
+<h2>Other terms</h2>
+<ul>
+  <li>We may disqualify entries that break these terms or that we reasonably believe are fake or fraudulent.</li>
+  <li>If something outside our control means we can’t run a draw fairly, we may cancel or change that draw and will announce it on our Facebook page.</li>
+  <li>This giveaway is not sponsored, endorsed or run by Facebook or Meta, and is in no way associated with them. By entering, you release Facebook and Meta from any responsibility for it.</li>
+</ul>""")
     simple("/404.html", "Page not found | Midha Limited", "Page not found.", "Sorry, we can’t find that page.",
            f'<p class="lead">Try one of these instead:</p><ul class="chips"><li><a href="/heat-pump-cleaning/">Heat pump cleaning</a></li><li><a href="/test-and-tag/">Test &amp; tag</a></li><li><a href="/electrical-services/">Electrical services</a></li><li><a href="/contact/">Contact</a></li></ul>', robots="noindex")
 
@@ -938,7 +1045,7 @@ def cloudflare_files():
     with open(os.path.join(OUT, "robots.txt"), "w") as f:
         f.write(f"User-agent: *\nAllow: /\nDisallow: /thanks/\n\nSitemap: {SITE}/sitemap.xml\n")
     urls = (["/", "/test-and-tag/"] + [f"/test-and-tag/{c['slug']}/" for c in CITIES] + [f"/test-and-tag/{RURAL[0]}/"]
-            + ["/heat-pump-cleaning/", "/electrical-services/", "/service-areas/", "/reviews/", "/about/", "/contact/", "/privacy/"])
+            + ["/heat-pump-cleaning/", "/electrical-services/", "/service-areas/", "/reviews/", "/about/", "/contact/", "/privacy/", "/terms/", "/giveaway-terms/"])
     with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for u in urls:
