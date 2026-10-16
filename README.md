@@ -14,10 +14,14 @@ The site runs on Cloudflare Workers static assets. `wrangler.jsonc` points Cloud
 
 | Setting | Value |
 |---|---|
+| Production branch | `main` |
 | Build command | *(leave empty)* |
 | Deploy command | `npx wrangler deploy` |
+| Root directory | `/` |
 
 Every push to `main` redeploys the site automatically.
+
+If a push doesn't redeploy, open the Worker's **Settings > Builds** in Cloudflare. A banner saying the project is disconnected from your Git account means Cloudflare's GitHub app has lost access: click **Manage**, give the **Cloudflare Workers and Pages** app access to this repo, then push again.
 
 ## Test & tag city pages
 
