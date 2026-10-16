@@ -262,3 +262,12 @@ The matching CSS custom properties are at the top of `site/assets/css/styles.css
 - **SEO/Ads:** Service schema per page (NZ / Wellington Region / City), new titles and descriptions, sitemap with all city pages, Google Ads tracking ready (off until an ID is added), privacy page covers Google's ad tag.
 - **Fix:** the "Heat Pump Cleaning" title on the dark home-page card was invisible (dark on dark).
 - **NZBN removed** from the footer, About page and Google data (client: the number was wrong and isn't needed).
+
+## Changes, 16 Oct 2026
+
+- **Medical equipment testing** (`/test-and-tag/medical-equipment-testing/`, NZ-wide): AS/NZS 3551 testing of basic equipment only (beds, hoists, chairs, pumps, oxygen concentrators and similar). Patient monitors, ECGs, infusion pumps and defibrillators are not offered. Body protected area checks are arranged with a registered electrician. Legal basis: Electricity (Safety) Regulations 2010, reg 91 (normal AS/NZS 3760 tags don't cover medical devices, reg 26).
+- **Fire extinguisher & fire blanket checks** (`/test-and-tag/fire-extinguisher-testing/`, NZ-wide): inspection and testing to NZS 4503:2005, every 12 months (6 in harsh sites). No refills or sales. Refills and 5-yearly pressure tests go to a specialist partner. Intervals stated honestly (Commerce Commission fined a company in 2020 for overclaiming).
+- Both added to the Services menu, footer, quote form, home Test & Tag card, home FAQ, Test & Tag page, city and rural pages, sitemap and redirects.
+- **Electrical Services:** Midha is a Registered Electrical Service Technician. New installations are done by a registered electrician, with Midha assisting (EWRB 2025 registration notice, EST class in force 1 Sep 2026). Badge shown on the Electrical page, About page and footer.
+- **Terms and privacy** updated for medical and fire results, and for work done by partners (registered electrician, extinguisher refill/pressure-test specialist).
+- **Giveaway** entry stays "like the post and tag 3 friends" (client decision).

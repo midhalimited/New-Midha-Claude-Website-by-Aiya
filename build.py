@@ -11,8 +11,13 @@ PHONE = "022 407 8603"
 TEL = "+64224078603"
 EMAIL = "midhalimited@gmail.com"
 HOURS = "Mon–Sat 7:30am–6:00pm"
-TODAY = datetime.date(2026, 10, 15).isoformat()
+TODAY = datetime.date(2026, 10, 16).isoformat()
 STANDARD = "AS/NZS 3760:2022"
+MED_STD = "AS/NZS 3551"
+FIRE_STD = "NZS 4503:2005"
+MED_PATH = "/test-and-tag/medical-equipment-testing/"
+FIRE_PATH = "/test-and-tag/fire-extinguisher-testing/"
+EST = "Registered Electrical Service Technician"
 FB_POST = "https://www.facebook.com/photo.php?fbid=122215666088570841&set=pb.61567125254358.-2207520000&type=3"
 
 def next_draw(d):
@@ -48,6 +53,8 @@ def icon(name, size=24, color="currentColor"):
         "star": '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9Z"/>',
         "menu": '<path d="M4 7h16M4 12h16M4 17h16"/>',
         "chev": '<path d="m6 9 6 6 6-6"/>',
+        "cross": '<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/>',
+        "flame": '<path d="M12 22a7 7 0 0 0 7-7c0-3.5-2.2-5.6-3.6-8.6-.5 1.9-1.4 3.1-2.6 3.8C12.6 7 11.4 4.4 9 2.5 8.8 6.6 5 9.6 5 15a7 7 0 0 0 7 7Z"/><path d="M12 22a3 3 0 0 0 3-3c0-2-1.6-3-3-5-1.4 2-3 3-3 5a3 3 0 0 0 3 3Z"/>',
     }
     return (f'<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" '
             f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{paths[name]}</svg>')
@@ -94,6 +101,8 @@ SERVICE_OPTIONS = [
     ("Heat pump – Comprehensive Clean ($189)", "comprehensive"),
     ("Heat pump – Filter replacement / repairs / pipe insulation", "heat-pump-other"),
     ("Test & Tag (workplace)", "test-tag"),
+    ("Medical equipment testing (AS/NZS 3551)", "medical"),
+    ("Fire extinguisher & fire blanket checks", "fire"),
     ("Electrical services (lighting, power points, cords)", "electrical"),
     ("Something else", "other"),
 ]
@@ -241,7 +250,7 @@ def head(title, desc, path, extra_ld=None):
         "@context": "https://schema.org", "@type": "LocalBusiness", "@id": SITE + "/#business",
         "name": "Midha Limited", "url": SITE + "/", "telephone": TEL, "email": EMAIL,
         "image": SITE + "/assets/img/og-image.jpg", "logo": SITE + "/assets/img/logo-512.png",
-        "description": "Test & tag across New Zealand, plus heat pump cleaning and electrical services in Greater Wellington.",
+        "description": "Test & tag, medical equipment testing and fire extinguisher checks across New Zealand, plus heat pump cleaning and electrical services in Greater Wellington.",
         "address": {"@type": "PostalAddress", "addressLocality": "Wainuiomata", "addressRegion": "Wellington", "addressCountry": "NZ"},
         "areaServed": [{"@type": "Country", "name": "New Zealand"}, {"@type": "AdministrativeArea", "name": "Wellington Region"}],
         "openingHoursSpecification": [{"@type": "OpeningHoursSpecification",
@@ -280,8 +289,12 @@ def head(title, desc, path, extra_ld=None):
 
 def nav(active):
     def cur(p): return ' aria-current="page"' if active == p else ""
-    services = "".join(
-        f'<li><a href="{href}"{cur(href)}>{icon(ic, 18)} {e(name)}</a></li>' for _, href, name, ic in SERVICES)
+    menu = []
+    for _, href, name, ic in SERVICES:
+        menu.append((href, name, ic))
+        if href == "/test-and-tag/":
+            menu += [(MED_PATH, "Medical equipment testing", "cross"), (FIRE_PATH, "Fire extinguisher checks", "flame")]
+    services = "".join(f'<li><a href="{href}"{cur(href)}>{icon(ic, 18)} {e(name)}</a></li>' for href, name, ic in menu)
     areas = (f'<li><a href="/test-and-tag/#locations">{icon("tag", 18)} Test &amp; tag: all of NZ</a></li>'
              f'<li><a href="/service-areas/">{icon("pin", 18)} Heat pumps &amp; electrical: Wellington</a></li>')
     return f"""<div class="announce" role="region" aria-label="Promotion">Win a free Pro Clean. A new Wellington winner every 3 months. <a href="/heat-pump-cleaning/#giveaway">How to enter</a></div>
@@ -313,15 +326,16 @@ def nav(active):
 
 def footer():
     services = "".join(f'<li><a href="{h}">{e(n)}</a></li>' for _, h, n, _ in SERVICES)
-    top = ["auckland", "hamilton", "tauranga", "wellington", "christchurch", "dunedin"]
+    services = services.replace('Test &amp; Tag</a></li>', f'Test &amp; Tag</a></li><li><a href="{MED_PATH}">Medical equipment testing</a></li><li><a href="{FIRE_PATH}">Fire extinguisher checks</a></li>', 1)
+    top =["auckland", "hamilton", "tauranga", "wellington", "christchurch", "dunedin"]
     areas = "".join(f'<li><a href="/test-and-tag/{c["slug"]}/">Test &amp; tag {e(c["name"])}</a></li>' for c in CITIES if c["slug"] in top)
     return f"""<footer class="site-footer on-dark">
   <div class="wrap">
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="/"><img src="/assets/img/logo-96.png" width="48" height="48" alt=""><span class="brand-name"><strong>Midha Limited</strong></span></a>
-        <p>Test &amp; tag for workplaces across New Zealand. Heat pump cleaning and electrical services for homes and businesses in Greater Wellington. Based in Wainuiomata.</p>
-        <p class="footer-small">100% NZ owned &amp; operated</p>
+        <p>Test &amp; tag, medical equipment testing and fire extinguisher checks for workplaces across New Zealand. Heat pump cleaning and electrical services for homes and businesses in Greater Wellington. Based in Wainuiomata.</p>
+        <p class="footer-small">100% NZ owned &amp; operated · {EST}</p>
       </div>
       <div><h2>Services</h2><ul>{services}<li><a href="/heat-pump-cleaning/#healthy-homes">Healthy Homes heating</a></li><li><a href="/service-areas/">Wellington service areas</a></li></ul></div>
       <div><h2>Test &amp; tag NZ</h2><ul>{areas}<li><a href="/test-and-tag/#locations">All locations</a></li></ul></div>
@@ -378,7 +392,7 @@ def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need 
       <li>{icon("phone")}<span><a href="tel:{TEL}">{PHONE}</a><br><span class="note">Call or text</span></span></li>
       <li>{icon("mail")}<span><a href="mailto:{EMAIL}">{EMAIL}</a></span></li>
       <li>{icon("clock")}<span>{HOURS}<br><span class="note">Urgent callouts available</span></span></li>
-      <li>{icon("pin")}<span>Based in Wainuiomata<br><span class="note">Test &amp; tag NZ-wide · heat pumps &amp; electrical in Greater Wellington</span></span></li>
+      <li>{icon("pin")}<span>Based in Wainuiomata<br><span class="note">Test &amp; tag, medical &amp; fire checks NZ-wide · heat pumps &amp; electrical in Greater Wellington</span></span></li>
     </ul>
   </div>
   <div class="form-card reveal">
@@ -389,7 +403,7 @@ def quote_section(heading="Get a fixed-price quote", sub="Tell us what you need 
         <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" aria-describedby="email-err"><span class="error" id="email-err">That email doesn’t look right.</span></div>
         <div class="field"><label for="suburb">Suburb or town</label><input id="suburb" name="suburb" autocomplete="address-level2"></div>
         <div class="field full"><label for="service">What do you need? <span aria-hidden="true">*</span></label><select id="service" name="service" required aria-describedby="service-err"><option value="">Choose a service</option>{opts}</select><span class="error" id="service-err">Please choose a service.</span></div>
-        <div class="field full"><label for="details">Job details <span class="hint">(optional: number of heat pumps or items, timing)</span></label><textarea id="details" name="details"></textarea></div>
+        <div class="field full"><label for="details">Job details <span class="hint">(optional: number of heat pumps, items or extinguishers, timing)</span></label><textarea id="details" name="details"></textarea></div>
         <div class="hp-field" aria-hidden="true"><label for="_gotcha">Leave this empty</label><input id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off"></div>
         <div class="full"><button class="btn btn--primary btn--block" type="submit">Send my request</button></div>
       </div>
@@ -452,7 +466,7 @@ def home():
   <a class="card card--lift" href="/test-and-tag/">
     <div class="icon-chip">{icon("tag", 26)}</div><span class="num">For workplaces · NZ-wide</span>
     <h2 class="h3" style="font-size:var(--fs-h3)">Test &amp; Tag</h2>
-    <p>{STANDARD} testing for tools, appliances, leads and RCDs anywhere in New Zealand, with QR tags and a digital register.</p>
+    <p>{STANDARD} testing for tools, appliances, leads and RCDs anywhere in New Zealand, with QR tags and a digital register. Medical equipment and fire extinguisher checks too.</p>
     <span class="more">Test &amp; tag details →</span></a>
   <a class="card card--lift card--ink on-dark" href="/heat-pump-cleaning/">
     <div class="icon-chip">{icon("fan", 26, "#FFFFFF")}</div><span class="num" style="color:#C9BFAE">For homes &amp; rentals · Wellington</span>
@@ -502,6 +516,7 @@ def home():
     fq, fld = faq([
         ("How much does a heat pump clean cost?", 'Our Pro Clean is $79, Elite Clean $129 and Comprehensive Clean $189. Prices are per heat pump and include GST. <a href="/heat-pump-cleaning/">Compare packages</a>.'),
         ("Do you only do test &amp; tag for businesses?".replace("&amp;", "&"), "Test &amp; tag is mainly for workplaces, construction sites, schools, cafés and offices, but we’re happy to test gear for anyone who needs it."),
+        ("Do you test medical equipment and fire extinguishers?", f'Yes, anywhere in New Zealand. We test medical equipment such as beds, hoists and pumps to {MED_STD}, and check fire extinguishers and fire blankets to {FIRE_STD}, often in the same visit as your test &amp; tag. See <a href="{MED_PATH}">medical equipment testing</a> and <a href="{FIRE_PATH}">fire extinguisher checks</a>.'),
         ("How quickly can you come out?", "We aim to reply to every quote request within 2 hours during business hours. Wainuiomata jobs can often be booked same day or next day; see our service areas for other suburbs."),
         ("Which areas do you cover?", 'Test &amp; tag is available right across New Zealand. <a href="/test-and-tag/#locations">See test &amp; tag locations</a>. Heat pump cleaning and electrical work cover Wainuiomata, Lower Hutt, Upper Hutt, Tawa, Newlands, Porirua and the wider Wellington region. <a href="/service-areas/">See Wellington service areas</a>.'),
     ], title="Got questions?")
@@ -654,6 +669,170 @@ def tt_steps():
   <ol class="grid grid-4 steps">{lis}</ol>
 </div></section>"""
 
+def also_checks(head=True):
+    """Cards linking to the medical and fire pages, shown on test & tag pages."""
+    hd = ('<div class="section-head" style="margin-top:40px"><span class="eyebrow">Also available, NZ-wide</span>'
+          '<h3 style="font-size:var(--fs-h3)">More safety checks in the same visit.</h3></div>') if head else ""
+    return f"""{hd}<div class="grid grid-2">
+    <a class="card card--lift reveal" href="{MED_PATH}"><div class="icon-chip" style="background:var(--c-bg)">{icon("cross")}</div><h3>Medical equipment testing</h3><p>Electrical safety testing of beds, hoists, pumps and other medical equipment to {MED_STD}, for clinics, aged care and equipment providers.</p><span class="more">Medical testing details →</span></a>
+    <a class="card card--lift reveal" href="{FIRE_PATH}"><div class="icon-chip" style="background:var(--c-bg)">{icon("flame")}</div><h3>Fire extinguisher &amp; blanket checks</h3><p>Yearly fire extinguisher testing to {FIRE_STD}, fire blanket checks, tags and a register you can show anyone who asks.</p><span class="more">Fire check details →</span></a>
+  </div>"""
+
+def steps_block(sid, title, intro, steps, eyebrow="How it works"):
+    lis = "".join(f'<li class="card reveal"><span class="step-num">{i + 1}</span><h3>{e(t)}</h3><p>{e(d)}</p></li>' for i, (t, d) in enumerate(steps))
+    return f"""<section class="section" aria-labelledby="{sid}"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">{eyebrow}</span><h2 id="{sid}">{title}</h2>
+  <p>{intro}</p></div>
+  <ol class="grid grid-4 steps">{lis}</ol>
+</div></section>"""
+
+MED_SVG = """<svg viewBox="0 0 220 300" role="img" aria-label="Illustration of a medical equipment test label reading Tested, AS/NZS 3551">
+<rect x="20" y="20" width="180" height="260" rx="24" fill="#FDFCF8" stroke="#1C1C1C" stroke-width="4"/>
+<rect x="82" y="40" width="56" height="56" rx="14" fill="#E2E8E4" stroke="#1C1C1C" stroke-width="4"/>
+<path d="M110 54v28M96 68h28" stroke="#1C1C1C" stroke-width="6" stroke-linecap="round"/>
+<text x="110" y="136" text-anchor="middle" font-family="General Sans, sans-serif" font-weight="700" font-size="26" fill="#1C1C1C">TESTED</text>
+<text x="110" y="164" text-anchor="middle" font-family="Switzer, sans-serif" font-weight="600" font-size="16" fill="#6E6354">AS/NZS 3551</text>
+<line x1="44" y1="186" x2="176" y2="186" stroke="#978B7A" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="44" y="214" font-family="Switzer, sans-serif" font-weight="600" font-size="14" fill="#1C1C1C">Electrical safety ✓</text>
+<text x="44" y="238" font-family="Switzer, sans-serif" font-weight="600" font-size="14" fill="#1C1C1C">Visual inspection ✓</text>
+<text x="44" y="262" font-family="Switzer, sans-serif" font-size="13" fill="#4A4A45">Next test due</text>
+</svg>"""
+
+FIRE_SVG = """<svg viewBox="0 0 220 300" role="img" aria-label="Illustration of a fire extinguisher with a maintenance tag">
+<path d="M92 44h36v18H92Z" fill="#1C1C1C"/>
+<path d="M128 50h34l10 14" fill="none" stroke="#1C1C1C" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M84 64h52v14H84Z" fill="#1C1C1C"/>
+<rect x="66" y="76" width="88" height="196" rx="36" fill="#B9382C" stroke="#1C1C1C" stroke-width="4"/>
+<circle cx="110" cy="112" r="14" fill="#FDFCF8" stroke="#1C1C1C" stroke-width="3"/>
+<path d="M110 112l6-7" stroke="#1C1C1C" stroke-width="3" stroke-linecap="round"/>
+<rect x="74" y="150" width="72" height="70" rx="8" fill="#FDFCF8" stroke="#1C1C1C" stroke-width="3"/>
+<text x="110" y="178" text-anchor="middle" font-family="General Sans, sans-serif" font-weight="700" font-size="12" fill="#1C1C1C">NZS 4503</text>
+<text x="110" y="200" text-anchor="middle" font-family="Switzer, sans-serif" font-weight="600" font-size="11" fill="#6E6354">CHECKED</text>
+<path d="M136 64c22 6 34 22 30 52" fill="none" stroke="#978B7A" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/>
+</svg>"""
+
+def medical_page():
+    path = MED_PATH
+    hero, bld = page_hero([("Home", "/"), ("Test & Tag", "/test-and-tag/"), ("Medical equipment testing", None)],
+        "Medical test &amp; tag · NZ-wide", f"Medical equipment testing to {MED_STD}.",
+        "Electrical safety testing and labelling of medical equipment for clinics, aged care and equipment providers across New Zealand, with an audit-ready report.",
+        badge=f'<span class="badge badge--gold">{MED_STD}</span>')
+    equip = ["Electric hospital &amp; care beds", "Patient hoists &amp; ceiling hoists", "Electric lift &amp; recliner chairs", "Air mattress pumps",
+             "Suction pumps", "Oxygen concentrators", "Nebulisers", "CPAP machines", "Examination lights", "Electric treatment couches &amp; tables",
+             "Sterilisers &amp; autoclaves", "Power wheelchair &amp; scooter chargers"]
+    who = ["GP clinics &amp; medical centres", "Dental clinics", "Physiotherapy", "Chiropractic &amp; osteopathy", "Podiatry",
+           "Aged care &amp; rest homes", "Hospices", "Disability support providers", "Home-care equipment providers", "Medical equipment hire"]
+    sec = f"""
+<section class="section" aria-labelledby="med-what"><div class="wrap split">
+  <div class="stack reveal"><span class="eyebrow">Why medical equipment is different</span><h2 id="med-what">Normal test &amp; tag doesn’t cover medical devices.</h2>
+    <p class="lead">A normal {STANDARD} tag doesn’t count for medical equipment. Under the Electricity (Safety) Regulations 2010, the owner of an electrical medical device must have it checked regularly to {MED_STD}, which has tighter safety limits.</p>
+    <p>We test your medical equipment to {MED_STD} using a tester made for the job, and test everything else in the building to {STANDARD} in the same visit.</p>
+    <ul class="check-list">
+      <li>Visual inspection of each device, its cord and plug</li>
+      <li>Protective earth, insulation and leakage current tests to {MED_STD}</li>
+      <li>A label on each device showing the test date, next due date, tests done and the standard</li>
+      <li>An asset register and report you can show at your accreditation audit</li>
+      <li>Faulty items clearly tagged out of service and listed in your report</li>
+      <li>Normal test &amp; tag of your other appliances in the same visit</li>
+    </ul>
+    <div class="btn-row" style="margin-top:8px"><a class="btn btn--primary" href="#quote" data-service="medical">Get a medical testing quote</a></div>
+  </div>
+  <div class="tag-illus reveal">{MED_SVG}</div>
+</div></section>
+<section class="section section--sage" aria-labelledby="med-equip"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">What we test</span><h2 id="med-equip">Equipment we test.</h2>
+  <p>We test everyday medical equipment, such as beds, hoists, chairs and pumps. Tell us what you have and we’ll confirm what we can test.</p></div>
+  <ul class="chips">{''.join(f'<li>{x}</li>' for x in equip)}</ul>
+  <div class="grid grid-2" style="margin-top:32px">
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("shield")}</div><h3>Specialist equipment</h3><p>We don’t test patient monitors, ECG machines, infusion pumps or defibrillators. These need a biomedical engineer, and we’re happy to suggest one.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("bolt")}</div><h3>Body protected areas</h3><p>Treatment rooms with medical-grade 10 mA safety switches need a yearly check and certificate from a registered electrician. We can arrange this for you with a registered electrician.</p></div>
+  </div>
+</div></section>
+<section class="section" aria-labelledby="med-who"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Who we test for</span><h2 id="med-who">Clinics, care providers and equipment suppliers.</h2></div>
+  <ul class="chips">{''.join(f'<li>{x}</li>' for x in who)}</ul>
+</div></section>
+{steps_block("med-how", "Simple, and around your patients.", "We test right across New Zealand. Depending on where you are, we travel to you or send one of our partner technicians.", [
+        ("Send us your list", "Roughly what medical equipment you have, plus how many other appliances, and where."),
+        ("Get a fixed quote", "One price that includes travel, so there are no surprises."),
+        ("We test on site", "Room by room, around your clinic hours, so patients aren’t disrupted."),
+        ("Get your report", "Labels on every device, and an audit-ready register with next due dates.")])}"""
+    fq, fld = faq([
+        ("Is medical equipment testing a legal requirement?", f"Yes. Under regulation 91 of the Electricity (Safety) Regulations 2010, the owner of an electrical medical device must make sure it is checked regularly to {MED_STD}. Using a device that hasn’t been checked is an offence, except in an emergency. The person who tests it gives you a record of the results."),
+        ("How often does medical equipment need testing?", "At least every 12 months, or more often if the manufacturer says so. New equipment should also be tested before it’s first used, and after any repair."),
+        ("Isn’t normal test & tag enough?", f"No. A normal {STANDARD} tag doesn’t count for medical devices, because medical equipment has tighter safety limits. Your other appliances, like kettles, computers and staff fridges, still get normal test &amp; tag, and we do both in one visit."),
+        ("Can you test without disrupting patients?", "Yes. We work room by room around your clinic hours, or before opening and after closing."),
+        ("Do you test patient monitors, ECGs or infusion pumps?", "No. These need specialist biomedical testing. We’re happy to suggest a biomedical engineer, and we can test the rest of your equipment."),
+        ("Will the report help with our audit?", "Yes. You get a register listing every device with its result, test date and next due date, which you can show your auditor."),
+    ], title="Medical equipment testing questions", sage=True)
+    svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": "Medical equipment testing",
+              "serviceType": f"Medical electrical equipment testing ({MED_STD})", "provider": {"@id": SITE + "/#business"},
+              "areaServed": {"@type": "Country", "name": "New Zealand"}, "url": SITE + path}
+    body = f"""<main id="main">{hero}{sec}{fq}{quote_section("Get a medical equipment testing quote", "Tell us roughly what equipment you have and where, and we’ll send a fixed price.", default="medical")}</main>"""
+    write(path, head(f"Medical Equipment Testing NZ | {MED_STD} Test & Tag | Midha",
+        f"Medical equipment test and tag to {MED_STD} across NZ: beds, hoists, pumps and more for GP clinics, dental, physio and aged care. Audit-ready reports.",
+        path, [bld, fld, svc_ld]) + nav(path) + body + footer())
+
+def fire_page():
+    path = FIRE_PATH
+    hero, bld = page_hero([("Home", "/"), ("Test & Tag", "/test-and-tag/"), ("Fire extinguisher checks", None)],
+        "Fire safety checks · NZ-wide", "Fire extinguisher and fire blanket checks.",
+        f"Yearly fire extinguisher testing to {FIRE_STD} and fire blanket checks for workplaces across New Zealand, often in the same visit as your test &amp; tag.",
+        badge=f'<span class="badge badge--gold">NZS 4503</span>')
+    who = ["Offices", "Cafés &amp; commercial kitchens", "Workshops &amp; factories", "Construction sites", "Schools &amp; early learning", "Retail stores",
+           "Warehouses", "Rental &amp; commercial buildings", "Community halls &amp; marae", "Farms", "Clinics &amp; aged care"]
+    sec = f"""
+<section class="section" aria-labelledby="fire-what"><div class="wrap split">
+  <div class="stack reveal"><span class="eyebrow">What’s included</span><h2 id="fire-what">Checked, tagged and on the register.</h2>
+    <p class="lead">Most building owners (not private homes) must keep their fire extinguishers and fire blankets maintained to {FIRE_STD}. We check and test yours, tag each one, and keep a register so you know what’s due.</p>
+    <ul class="check-list">
+      <li>Inspection and testing of portable fire extinguishers to {FIRE_STD}</li>
+      <li>Pressure gauge, pin and seal, hose, nozzle, label and bracket checked</li>
+      <li>Fire blankets checked: in place, easy to reach, undamaged, with pull tabs intact</li>
+      <li>A maintenance tag on every extinguisher</li>
+      <li>A fire equipment register and report for your records</li>
+      <li>Anything that fails is clearly marked, with advice on what to do next</li>
+    </ul>
+    <div class="btn-row" style="margin-top:8px"><a class="btn btn--primary" href="#quote" data-service="fire">Get a fire check quote</a></div>
+  </div>
+  <div class="tag-illus reveal">{FIRE_SVG}</div>
+</div></section>
+<section class="section section--sage" aria-labelledby="fire-often"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">How often</span><h2 id="fire-often">What NZS 4503 asks for.</h2></div>
+  <div class="grid grid-3">
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("clock")}</div><h3>Every 12 months</h3><p>Most workplaces need their extinguishers and fire blankets checked once a year.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("shield")}</div><h3>Every 6 months in harsh places</h3><p>Extinguishers in corrosive, dusty, outdoor or high-vibration areas are checked twice a year.</p></div>
+    <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("wrench")}</div><h3>Pressure test every 5 years</h3><p>We don’t refill or pressure test extinguishers ourselves. When one is due, or has been used, we arrange it through our specialist partner.</p></div>
+  </div>
+</div></section>
+<section class="section" aria-labelledby="fire-self"><div class="wrap split">
+  <div class="stack reveal"><span class="eyebrow">Between our visits</span><h2 id="fire-self">A quick monthly check for your team.</h2>
+    <p class="lead">It takes a minute. If anything looks wrong, call us.</p>
+    <ul class="check-list">
+      <li>Each extinguisher is in its place and nothing is blocking it</li>
+      <li>The pin and seal are in place</li>
+      <li>The gauge needle is in the green</li>
+      <li>No dents, rust, leaks or damaged hoses</li>
+      <li>The fire blanket is in place, with both pull tabs showing</li>
+    </ul>
+  </div>
+  <div class="stack reveal"><div class="card"><h3>Who we check for</h3><ul class="chips">{''.join(f'<li>{x}</li>' for x in who)}</ul></div></div>
+</div></section>"""
+    fq, fld = faq([
+        ("How often do fire extinguishers need servicing in NZ?", f"Under {FIRE_STD}, most workplaces need their extinguishers serviced every 12 months. Extinguishers in harsh places, such as corrosive, dusty or outdoor areas, are checked every 6 months. Each extinguisher also needs a pressure test every 5 years."),
+        ("Do I have to have fire extinguishers?", f"It depends on your building and what you store. Fire and Emergency NZ rules require them in some buildings, and workplaces that store flammable substances like fuel or solvents may need them too. If you do have extinguishers or fire blankets, they must be maintained to {FIRE_STD}."),
+        ("Do fire blankets need checking?", f"Yes. Fire blankets are covered by {FIRE_STD} along with extinguishers. We check they’re in place, easy to reach and undamaged. A blanket that has been used should be replaced."),
+        ("Can you refill or pressure test extinguishers?", "We don’t do refills or pressure tests ourselves. We arrange them through our specialist partner and give you the price before anything is sent away."),
+        ("Can you do this with our test & tag?", "Yes. Most customers book both together, so one visit covers your electrical equipment and your fire extinguishers."),
+    ], title="Fire extinguisher questions", sage=True)
+    svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": "Fire extinguisher and fire blanket checks",
+              "serviceType": f"Fire extinguisher inspection and testing ({FIRE_STD})", "provider": {"@id": SITE + "/#business"},
+              "areaServed": {"@type": "Country", "name": "New Zealand"}, "url": SITE + path}
+    body = f"""<main id="main">{hero}{sec}{fq}{quote_section("Get a fire extinguisher check quote", "Tell us roughly how many extinguishers and fire blankets you have and where.", default="fire")}</main>"""
+    write(path, head(f"Fire Extinguisher Testing NZ | NZS 4503 & Fire Blankets | Midha",
+        f"Fire extinguisher testing to {FIRE_STD} and fire blanket checks for NZ workplaces. Tags, a fire equipment register, and test & tag in the same visit.",
+        path, [bld, fld, svc_ld]) + nav(path) + body + footer())
+
 def test_tag():
     hero, bld = page_hero([("Home", "/"), ("Test & Tag", None)], "Workplace electrical safety · NZ-wide",
         "Test &amp; tag across New Zealand.",
@@ -683,12 +862,17 @@ def test_tag():
 {tt_steps()}
 <section class="section section--sage" aria-labelledby="tt-who"><div class="wrap">
   <div class="section-head"><span class="eyebrow">Who we test for</span><h2 id="tt-who">From cafés to construction sites.</h2></div>
-  <ul class="chips"><li>Workshops &amp; factories</li><li>Construction sites</li><li>Offices</li><li>Cafés &amp; restaurants</li><li>Schools &amp; early learning</li><li>Retail stores</li><li>Warehouses</li><li>Farms &amp; orchards</li><li>Hotels &amp; motels</li><li>Multi-site businesses</li><li>Rental properties</li><li>Community halls</li></ul>
+  <ul class="chips"><li>Workshops &amp; factories</li><li>Construction sites</li><li>Offices</li><li>Cafés &amp; restaurants</li><li>Schools &amp; early learning</li><li>Retail stores</li><li>Warehouses</li><li>Farms &amp; orchards</li><li>Hotels &amp; motels</li><li>Multi-site businesses</li><li>Rental properties</li><li>Community halls</li><li>Medical &amp; dental clinics</li><li>Aged care</li></ul>
   <div class="grid grid-3" style="margin-top:32px">
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("qr")}</div><h3>Smart QR tags</h3><p>Scan any tag to see its test history. No more hunting through paper logbooks.</p></div>
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("clock")}</div><h3>Around your hours</h3><p>Early starts before the tools come out, or quiet times so your customers aren’t disturbed.</p></div>
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("shield")}</div><h3>Faulty gear flagged</h3><p>Anything that fails is clearly tagged out of service and listed in your register, so you know what to repair or replace.</p></div>
   </div>
+</div></section>"""
+    more = f"""<section class="section" aria-labelledby="tt-more"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">More safety checks · NZ-wide</span><h2 id="tt-more">Medical equipment and fire extinguishers too.</h2>
+  <p>Book them with your test &amp; tag and one visit covers the lot.</p></div>
+  {also_checks(head=False)}
 </div></section>"""
     revs = "".join(review_card(r) for r in REVIEWS if r[2] == "Test & Tag")
     rev = f"""<section class="section" aria-labelledby="tt-rev"><div class="wrap"><div class="section-head"><span class="eyebrow">What clients say</span><h2 id="tt-rev">Trusted by local businesses.</h2></div><div class="grid grid-3">{revs}</div></div></section>"""
@@ -701,7 +885,7 @@ def test_tag():
     ], title="Test & tag questions")
     svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": "Test and tag", "serviceType": f"Electrical test and tag ({STANDARD})",
               "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "Country", "name": "New Zealand"}}
-    body = f"""<main id="main">{hero}{body_sec}{rev}{fq}{quote_section("Get a test & tag quote", "Let us know roughly how many items and where they are, and we’ll come back with a fixed price.", default="test-tag")}</main>"""
+    body = f"""<main id="main">{hero}{body_sec}{more}{rev}{fq}{quote_section("Get a test & tag quote", "Let us know roughly how many items and where they are, and we’ll come back with a fixed price.", default="test-tag")}</main>"""
     write("/test-and-tag/", head(f"Test and Tag NZ | {STANDARD} | Midha Limited",
         f"{STANDARD} test and tag for workplaces across NZ: Auckland, Hamilton, Tauranga, Wellington, Christchurch, Dunedin and more. QR tags, digital register.",
         "/test-and-tag/", [bld, fld, svc_ld]) + nav("/test-and-tag/") + body + footer())
@@ -733,6 +917,7 @@ def city_page(c):
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("qr")}</div><h3>QR tags &amp; digital register</h3><p>Every item gets a QR tag, and your PDF register usually arrives within 24 hours.</p></div>
     <div class="card reveal"><div class="icon-chip" style="background:var(--c-bg)">{icon("dollar")}</div><h3>Fixed quote, travel included</h3><p>You know the full price before we book, with reminders before your retests are due.</p></div>
   </div>
+  {also_checks()}
 </div></section>
 {tt_steps()}"""
     fq, fld = faq(c["faqs"] + TT_FAQ_SHARED[:2], title=f"Test & tag in {name}: questions")
@@ -769,7 +954,8 @@ def rural_page():
     <div class="card"><h3>Regions we cover</h3><ul class="chips">{regions}</ul></div>
   </div>
 </div></section>
-{tt_steps()}"""
+{tt_steps()}
+<section class="section" style="padding-top:0"><div class="wrap">{also_checks()}</div></section>"""
     fq, fld = faq([
         ("How much does travel to a rural site cost?", "Travel is included in your fixed quote, so you’ll know the full price before you book."),
         ("What do you need to know to quote?", "Where your site is, roughly how many items need testing, and any timing that suits you, such as before harvest, calving or a new season starts."),
@@ -790,13 +976,14 @@ def rural_page():
 def electrical():
     hero, bld = page_hero([("Home", "/"), ("Electrical Services", None)], "Electrical services",
         "Lighting, power points and repairs, done tidily.",
-        "Light installations, LED downlights, security and sensor lights, new power points, and cord and lead repairs for homes and businesses across Greater Wellington.")
+        "Light installations, LED downlights, security and sensor lights, new power points, and cord and lead repairs for homes and businesses across Greater Wellington.",
+        badge=f'<span class="badge badge--gold">{EST}</span>')
     hero = hero.replace('<span class="eyebrow">Electrical services</span>', '<span class="eyebrow">Electrical services · Greater Wellington</span>')
     items = [
-        ("bulb", "Light installations", "New light fittings, pendants and replacements for tired or broken lights, inside and out."),
+        ("bulb", "Light installations", "Replacements for tired or broken lights, plus new light fittings and pendants, inside and out."),
         ("bolt", "LED downlights", "Swap old halogens for energy-efficient LED downlights that run cooler and cost less to run."),
         ("shield", "Security & sensor lights", "Motion-sensor and security lighting for driveways, entrances and yards."),
-        ("plug", "Power points", "Extra or relocated power points, including double and USB outlets."),
+        ("plug", "Power points", "Broken power points replaced, plus extra or relocated power points, including double and USB outlets."),
         ("wrench", "Cord & lead repairs", "Damaged extension leads and appliance cords repaired or replaced, often on the spot."),
     ]
     cards = "".join(f'<article class="card card--lift reveal"><div class="icon-chip">{icon(i)}</div><h3>{e(t)}</h3><p>{e(d)}</p></article>' for i, t, d in items)
@@ -806,15 +993,23 @@ def electrical():
   <div class="section-head"><span class="eyebrow">What we do</span><h2 id="el-title">Electrical jobs we take on.</h2></div>
   <div class="grid grid-3">{cards}</div>
 </div></section>
-<section class="section" aria-labelledby="el-why"><div class="wrap split">
+<section class="section" aria-labelledby="el-who"><div class="wrap">
+  <div class="card reveal" style="max-width:860px">
+    <div class="icon-chip" style="background:var(--c-sage)">{icon("shield")}</div>
+    <h2 id="el-who" style="font-size:var(--fs-h3)">Who does the work.</h2>
+    <p>Midha is a {EST}. We do repairs and like-for-like replacements ourselves. <strong>New installations</strong>, such as extra power points or new lights, are done by a <strong>registered electrician</strong>, with us assisting. Either way, you get one fixed quote.</p>
+  </div>
+</div></section>
+<section class="section" aria-labelledby="el-why" style="padding-top:0"><div class="wrap split">
   <div class="stack reveal"><span class="eyebrow">How we work</span><h2 id="el-why">Clear quotes, clean work.</h2>
     <p class="lead">We quote a fixed price before we start, turn up when we say we will, and leave your place as tidy as we found it.</p>
-    <ul class="check-list"><li>Fixed, upfront quotes</li><li>Drop sheets and clean boots</li><li>Old fittings taken away</li><li>Everything tested before we leave</li></ul>
+    <ul class="check-list"><li>Fixed, upfront quotes</li><li>New installations done by a registered electrician</li><li>Drop sheets and clean boots</li><li>Old fittings taken away</li><li>Everything tested before we leave</li></ul>
   </div>
   <div class="tag-illus reveal">{BULB_SVG}</div>
 </div></section>"""
     fq, fld = faq([
-        ("Do you do small jobs?", "Yes. Swapping a light fitting or adding a power point is exactly the kind of job we’re happy to take on."),
+        ("Do you do small jobs?", "Yes. Swapping a light fitting, replacing a broken power point or repairing a cord is exactly the kind of job we’re happy to take on."),
+        ("Who does the electrical work?", f"Midha is a {EST}. We do repairs and like-for-like replacements ourselves. New installations, like extra power points or new lights, are done by a registered electrician, with us assisting. You still get one fixed quote."),
         ("Can you switch my old downlights to LED?", "Yes. LED downlights use far less power and run cooler than halogens. We’ll quote for the number of lights you want changed."),
         ("How do I get a price?", 'Fill in the quote form or call <a href="tel:' + TEL + '">' + PHONE + '</a> with a quick description and a photo if you can. We’ll come back with a fixed price.'),
     ], title="Electrical questions")
@@ -853,8 +1048,8 @@ def about_page():
 <section class="section"><div class="wrap split">
   <div class="stack reveal"><span class="eyebrow">Our story</span><h2>Safety, reliability and clean air.</h2>
     <p class="lead">Midha Limited started with a simple idea: every Kiwi workplace and home deserves reliable safety compliance and heating care, without red tape or hidden fees.</p>
-    <p>Based in Wainuiomata, we look after heat pumps and electrical work across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua, and test and tag workplaces right across New Zealand. We combine careful technical work with friendly, approachable service.</p>
-    <p class="note">Midha Limited is a registered New Zealand company.</p>
+    <p>Based in Wainuiomata, we look after heat pumps and electrical work across Lower Hutt, Upper Hutt, Tawa, Newlands and Porirua. Right across New Zealand, we test and tag workplaces, test medical equipment and check fire extinguishers. We combine careful technical work with friendly, approachable service.</p>
+    <p class="note">Midha Limited is a registered New Zealand company, run by a {EST}.</p>
   </div>
   <div class="split-media reveal">{pic("indoor-coil-clean", "Midha technician cleaning an indoor heat pump coil")}</div>
 </div></section>
@@ -877,10 +1072,10 @@ def contact_page():
     zone = f"""<section class="section section--sage"><div class="wrap split">
   <div class="stack"><span class="eyebrow">Our base</span><h2>Where we work.</h2>
   <p class="lead">Heat pump cleaning and electrical work: Wainuiomata, Petone, Gracefield, Epuni, Waterloo, Silverstream, Trentham, Tawa, Newlands, Johnsonville and Porirua.</p>
-  <p>Test &amp; tag: anywhere in New Zealand. <a href="/test-and-tag/#locations">See test &amp; tag locations</a>.</p></div>
+  <p>Test &amp; tag, medical equipment testing and fire extinguisher checks: anywhere in New Zealand. <a href="/test-and-tag/#locations">See test &amp; tag locations</a>.</p></div>
   <ul class="chips"><li>No travel surcharge in Wainuiomata</li><li>Same day / next day in Wainui</li><li>After-hours slots for businesses</li><li>Urgent callouts available</li></ul>
 </div></section>"""
-    body = f"""<main id="main">{hero}{quote_section("Book a service or request a quote", "Annual test & tag, a heat pump clean or an electrical job? Tell us what you need.")}{zone}</main>"""
+    body = f"""<main id="main">{hero}{quote_section("Book a service or request a quote", "Test & tag, medical equipment, fire extinguishers, a heat pump clean or an electrical job? Tell us what you need.")}{zone}</main>"""
     write("/contact/", head("Contact Midha Limited | Book Test & Tag, Heat Pump or Electrical",
         f"Get a free, fixed-price quote. Call {PHONE} or email {EMAIL}. Test & tag across New Zealand; heat pumps and electrical in Greater Wellington.",
         "/contact/", [bld]) + nav("/contact/") + body + footer())
@@ -894,17 +1089,18 @@ def simple(path, title, desc, h1, inner, robots=None):
 def misc():
     simple("/thanks/", "Thanks | Midha Limited", "Thanks for your enquiry.", "Thanks, we’ve got your request.",
            f'<p class="lead">We’ll be in touch within 2 hours during business hours ({HOURS}). If it’s urgent, call <a href="tel:{TEL}">{PHONE}</a>.</p><p><a class="btn btn--primary" href="/">Back to home</a></p>', robots="noindex")
-    updated = "15 October 2026"
+    updated = "16 October 2026"
+    giveaway_updated = "15 October 2026"
     contact = f'<a href="mailto:{EMAIL}">{EMAIL}</a> or {PHONE}'
     simple("/privacy/", "Privacy Policy | Midha Limited", "How Midha Limited collects, uses, shares and protects your personal information under the New Zealand Privacy Act 2020.", "Privacy policy",
            f"""<p class="note">Last updated {updated}</p>
 <p class="lead">Midha Limited (“we”, “us”) respects your privacy. This policy explains what personal information we collect, why, who we share it with, and your rights under the New Zealand Privacy Act 2020.</p>
 <h2>Who we are</h2>
-<p>Midha Limited is a New Zealand company based in Wainuiomata, Lower Hutt. We provide test &amp; tag across New Zealand, and heat pump cleaning and electrical services in the Wellington region. For anything about your personal information, contact our privacy officer at {contact}.</p>
+<p>Midha Limited is a New Zealand company based in Wainuiomata, Lower Hutt. We provide test &amp; tag, medical equipment testing and fire extinguisher checks across New Zealand, and heat pump cleaning and electrical services in the Wellington region. For anything about your personal information, contact our privacy officer at {contact}.</p>
 <h2>What we collect</h2>
 <ul>
   <li><strong>When you ask for a quote or book a job:</strong> your name, phone number, email, suburb or town, the service you need and any job details you give us.</li>
-  <li><strong>When we do the job:</strong> the site address, an on-site contact person, access details, and job records such as test &amp; tag registers, test results, photos of the equipment or heat pump, and invoices.</li>
+  <li><strong>When we do the job:</strong> the site address, an on-site contact person, access details, and job records such as test &amp; tag, medical equipment and fire equipment registers, test results, photos of the equipment or heat pump, and invoices. We don’t need or collect patient information when testing medical equipment.</li>
   <li><strong>When you call, text or email us:</strong> your message and contact details.</li>
   <li><strong>When you enter our giveaway:</strong> your Facebook name and what you post on the giveaway post. If you win, we ask for your contact details and the address of the heat pump to be cleaned.</li>
   <li><strong>When you visit our website:</strong> basic technical information such as your IP address, browser type and the pages you visit, which our hosting provider uses to keep the site running and secure.</li>
@@ -925,6 +1121,7 @@ def misc():
 <p>We never sell your personal information. We only share it when we need to:</p>
 <ul>
   <li><strong>Partner technicians</strong> who carry out test &amp; tag jobs for us outside the Wellington region. They get only what they need to do your job, such as the site address, contact person and equipment details.</li>
+  <li><strong>Partners we arrange work through</strong>, such as a registered electrician for new electrical installations, or a specialist who refills and pressure tests fire extinguishers. They also get only what they need to do the work.</li>
   <li><strong>Service providers</strong> who help us run the business: our email provider (Google), our website host (Cloudflare), our website form provider (Formspree), our font provider (Fontshare), and our accountant. If we advertise on Google, Google also receives information about ad clicks, as explained below.</li>
   <li><strong>Meta (Facebook)</strong>, which runs the platform our giveaway takes place on.</li>
   <li>Anyone we’re required to share it with by law.</li>
@@ -941,7 +1138,7 @@ def misc():
 <p>If you’re not happy with how we’ve handled your information, please tell us first so we can put it right. You can also complain to the Office of the Privacy Commissioner at <a href="https://www.privacy.org.nz" rel="noopener">privacy.org.nz</a> or 0800 803 909.</p>
 <h2>Changes to this policy</h2>
 <p>We may update this policy from time to time. The date at the top shows when it last changed.</p>""")
-    simple("/terms/", "Terms of Use | Midha Limited", "Terms for using the Midha Limited website, our quotes and prices, the mould-free guarantee, and test & tag results.", "Website terms",
+    simple("/terms/", "Terms of Use | Midha Limited", "Terms for using the Midha Limited website, our quotes and prices, the mould-free guarantee, test results and work done by our partners.", "Website terms",
            f"""<p class="note">Last updated {updated}</p>
 <p class="lead">These terms apply when you use the Midha Limited website. Please read them along with our <a href="/privacy/">privacy policy</a>.</p>
 <h2>Information on this website</h2>
@@ -955,8 +1152,10 @@ def misc():
 </ul>
 <h2>Mould-free guarantee</h2>
 <p>The 3-month mould-free guarantee applies to our Comprehensive Clean. If mould comes back on the cleaned heat pump within 3 months of the clean, contact us within that time and we’ll re-clean that heat pump for free.</p>
-<h2>Test &amp; tag results</h2>
-<p>A test &amp; tag result shows the condition of an item on the day it was tested. It can’t guarantee the item will stay safe afterwards. Between tests, equipment owners should check their gear before use and stop using anything that is damaged. Faults should only be repaired by someone qualified to do so.</p>
+<h2>Test results</h2>
+<p>A test &amp; tag, medical equipment or fire extinguisher check result shows the condition of an item on the day it was tested. It can’t guarantee the item will stay safe afterwards. Between tests, equipment owners should check their gear before use and stop using anything that is damaged. Faults should only be repaired by someone qualified to do so.</p>
+<h2>Work done by our partners</h2>
+<p>Some work is done by partners we arrange for you: new electrical installations are done by a registered electrician, and fire extinguisher refills and pressure tests are done by a specialist partner. We’ll tell you before any work like this is booked, and include it in your quote.</p>
 <h2>Your consumer rights</h2>
 <p>Nothing in these terms limits your rights under the Consumer Guarantees Act 1993 or the Fair Trading Act 1986. If you buy our services for business purposes, the Consumer Guarantees Act does not apply, as allowed by section 43 of that Act.</p>
 <h2>Our liability</h2>
@@ -970,7 +1169,7 @@ def misc():
 <h2>Contact</h2>
 <p>Questions about these terms? Contact us at {contact}.</p>""")
     simple("/giveaway-terms/", "Giveaway Terms | Win a Free Pro Clean | Midha Limited", "Terms and conditions for the Midha Limited free Pro Clean giveaway, drawn every 3 months for Wellington region residents.", "Giveaway terms and conditions",
-           f"""<p class="note">Last updated {updated}</p>
+           f"""<p class="note">Last updated {giveaway_updated}</p>
 <p class="lead">These terms apply to the Midha Limited “Win a free Pro Clean” giveaway. By entering, you agree to them.</p>
 <h2>Promoter</h2>
 <p>The promoter is Midha Limited, Wainuiomata, Lower Hutt. Contact {contact}.</p>
@@ -1008,7 +1207,7 @@ def misc():
   <li>This giveaway is not sponsored, endorsed or run by Facebook or Meta, and is in no way associated with them. By entering, you release Facebook and Meta from any responsibility for it.</li>
 </ul>""")
     simple("/404.html", "Page not found | Midha Limited", "Page not found.", "Sorry, we can’t find that page.",
-           f'<p class="lead">Try one of these instead:</p><ul class="chips"><li><a href="/heat-pump-cleaning/">Heat pump cleaning</a></li><li><a href="/test-and-tag/">Test &amp; tag</a></li><li><a href="/electrical-services/">Electrical services</a></li><li><a href="/contact/">Contact</a></li></ul>', robots="noindex")
+           f'<p class="lead">Try one of these instead:</p><ul class="chips"><li><a href="/heat-pump-cleaning/">Heat pump cleaning</a></li><li><a href="/test-and-tag/">Test &amp; tag</a></li><li><a href="{MED_PATH}">Medical equipment testing</a></li><li><a href="{FIRE_PATH}">Fire extinguisher checks</a></li><li><a href="/electrical-services/">Electrical services</a></li><li><a href="/contact/">Contact</a></li></ul>', robots="noindex")
 
 def cloudflare_files():
     with open(os.path.join(OUT, "_headers"), "w") as f:
@@ -1037,6 +1236,10 @@ def cloudflare_files():
 /test-tag            /test-and-tag/         301
 /test-and-tag-nz     /test-and-tag/         301
 /locations           /test-and-tag/#locations 302
+/medical-test-and-tag      /test-and-tag/medical-equipment-testing/  301
+/medical-testing           /test-and-tag/medical-equipment-testing/  301
+/fire-extinguishers        /test-and-tag/fire-extinguisher-testing/  301
+/fire-extinguisher-testing /test-and-tag/fire-extinguisher-testing/  301
 /electrical          /electrical-services/  301
 /about-us            /about/                301
 /contact-us          /contact/              301
@@ -1044,7 +1247,7 @@ def cloudflare_files():
 """)
     with open(os.path.join(OUT, "robots.txt"), "w") as f:
         f.write(f"User-agent: *\nAllow: /\nDisallow: /thanks/\n\nSitemap: {SITE}/sitemap.xml\n")
-    urls = (["/", "/test-and-tag/"] + [f"/test-and-tag/{c['slug']}/" for c in CITIES] + [f"/test-and-tag/{RURAL[0]}/"]
+    urls = (["/", "/test-and-tag/", MED_PATH, FIRE_PATH] + [f"/test-and-tag/{c['slug']}/" for c in CITIES] + [f"/test-and-tag/{RURAL[0]}/"]
             + ["/heat-pump-cleaning/", "/electrical-services/", "/service-areas/", "/reviews/", "/about/", "/contact/", "/privacy/", "/terms/", "/giveaway-terms/"])
     with open(os.path.join(OUT, "sitemap.xml"), "w") as f:
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
@@ -1058,5 +1261,5 @@ def cloudflare_files():
                              {"src": "/assets/img/logo-512.png", "sizes": "512x512", "type": "image/png"}]}, f, indent=2)
 
 if __name__ == "__main__":
-    home(); heat_pump(); test_tag(); [city_page(c) for c in CITIES]; rural_page(); electrical(); areas_page(); reviews_page(); about_page(); contact_page(); misc(); cloudflare_files()
+    home(); heat_pump(); test_tag(); medical_page(); fire_page(); [city_page(c) for c in CITIES]; rural_page(); electrical(); areas_page(); reviews_page(); about_page(); contact_page(); misc(); cloudflare_files()
     print("built", OUT)
