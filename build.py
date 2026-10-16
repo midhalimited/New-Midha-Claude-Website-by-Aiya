@@ -607,7 +607,7 @@ def heat_pump():
     <h2 id="give-title">Win a free Pro Clean.</h2>
     <p class="lead">Every 3 months we give a free Pro Clean ($79 value) to one Wellington winner, drawn at random. Draws happen at the end of March, June, September and December.</p>
     <p>To enter, go to our giveaway post on Facebook and:</p>
-    <ul class="check-list"><li>Like the post</li><li>Comment your suburb on the post</li><li>Live in the Wellington region</li></ul>
+    <ul class="check-list"><li>Like the post</li><li>Tag 3 friends in Wellington in the comments</li><li>Live in the Wellington region</li></ul>
     <div class="btn-row"><a class="btn btn--primary" href="{e(FB_POST)}" target="_blank" rel="noopener">Enter on Facebook <span class="visually-hidden">(opens in a new tab)</span></a></div>
     <p class="note">Free to enter. 18+ Wellington region residents only. <a href="/giveaway-terms/">Full terms and conditions</a>. This giveaway is run by Midha Limited and isn’t sponsored or run by Facebook.</p>
   </div>
@@ -987,7 +987,7 @@ def misc():
   <li>One entry per person per draw.</li>
 </ul>
 <h2>How to enter</h2>
-<p>Entry is free and you don’t need to buy anything. To enter, like our giveaway post on Facebook and comment your suburb during the draw period. You don’t need to tag or share with anyone.</p>
+<p>Entry is free and you don’t need to buy anything. To enter, follow the steps in our giveaway post on Facebook during the draw period.</p>
 <h2>Draw periods and draws</h2>
 <ul>
   <li>The giveaway runs in 3-month periods ending on 31 March, 30 June, 30 September and 31 December.</li>
