@@ -7,9 +7,9 @@ Built as a static site for Cloudflare Pages (see `DEPLOY-TO-CLOUDFLARE.md`).
 
 | Topic | Decision | Source |
 |---|---|---|
-| Business | Midha Limited, Wainuiomata. NZBN 9429051638016. 022 407 8603. midhalimited@gmail.com. Mon–Sat 7:30am–6:00pm | Blueprint, confirmed |
+| Business | Midha Limited, Wainuiomata. 022 407 8603. midhalimited@gmail.com. Mon–Sat 7:30am–6:00pm | Blueprint, confirmed |
 | Services | Three separate lines: **Test & Tag**, **Heat Pump Cleaning**, **Electrical Services** | Client |
-| AS/NZS 3760:2010 | Shown on Test & Tag content only, never as a business-wide badge | Client |
+| AS/NZS 3760:2022 | Shown on Test & Tag content only, never as a business-wide badge (updated from 2010 on 15 Oct 2026) | Client |
 | Heat pump packages | Pro $79, Elite $129 (Most popular), Comprehensive $189. Per heat pump, GST incl. | Client |
 | Pro vs Elite | Pro: indoor vacuum clean, outdoor pressure wash. Elite: indoor and outdoor pressure wash, plus check sheet | Client |
 | Mould guarantee | 3 months, free re-clean (old site said 12 months; corrected) | Client |
@@ -59,7 +59,7 @@ Built as a static site for Cloudflare Pages (see `DEPLOY-TO-CLOUDFLARE.md`).
 
 **Primary nav:** Services ▾ (Test & Tag, Heat Pump Cleaning, Electrical Services) · Service areas ▾ · Reviews · About · Contact · phone · **Get a quote**.
 **Mobile:** hamburger opens a full-width panel; floating Call / Get a quote bar is fixed at the bottom.
-**Footer:** brand + NZBN, Services, Service areas, Get in touch, Privacy.
+**Footer:** brand, Services, Service areas, Get in touch, Privacy.
 **Redirects:** `/services` → `/heat-pump-cleaning/` and other old addresses (see `_redirects`).
 
 ## E. User journeys and conversion
@@ -167,7 +167,7 @@ Skip link; landmarks (header, nav, main, footer); one H1 per page; visible 3px f
 |---|---|
 | Home | Test & Tag, Heat Pump Cleaning & Electrical \| Midha Limited Wellington |
 | Heat pump | Heat Pump Cleaning Wellington from $79 \| Midha Limited |
-| Test & tag | Test and Tag Wellington \| AS/NZS 3760 \| Midha Limited |
+| Test & tag | Test and Tag NZ \| AS/NZS 3760:2022 \| Midha Limited |
 | Electrical | Electrical Services Wellington \| Lighting & Power Points \| Midha |
 | Areas | Service Areas \| Wainuiomata, Hutt Valley, Tawa, Porirua \| Midha Limited |
 
@@ -251,3 +251,23 @@ The matching CSS custom properties are at the top of `site/assets/css/styles.css
   4. Confirm before adding: "licensed", "WorkSafe compliant", "public liability insurance".
   5. The 8 reviews: confirm they are real customer reviews, or replace them with Google reviews.
   6. Approximate test & tag pricing if you want to show "from $X per item".
+
+## Changes, 15 Oct 2026
+
+- **Test & tag is NZ-wide.** Heat pump cleaning and electrical stay Greater Wellington only. Jobs outside Wellington are done by Midha travelling or by partner technicians, so pages say "we come to you" and never claim a local office.
+- **16 city pages + 1 rural page** under `/test-and-tag/`: Auckland, Hamilton, Tauranga, Rotorua, Whangārei, Napier & Hastings, New Plymouth, Palmerston North, Whanganui, Wellington, Nelson, Blenheim, Christchurch, Dunedin, Queenstown, Invercargill, and Regional & rural NZ. Each has unique copy (doorway-page rule).
+- **Standard:** AS/NZS 3760:2022 (2010 edition superseded 24 June 2023). Wording softened: test and tag is "the most common way" to show equipment is kept safe (WorkSafe: not mandatory).
+- **Giveaway:** free Pro Clean every 3 months, draws at the end of Mar/Jun/Sep/Dec, entered on Facebook. "Enter on Facebook" button and auto-updating next draw date.
+- **Healthy Homes:** removed from the quote form and its two reviews removed (6 reviews remain). The Heat Pump page card and footer link stay.
+- **SEO/Ads:** Service schema per page (NZ / Wellington Region / City), new titles and descriptions, sitemap with all city pages, Google Ads tracking ready (off until an ID is added), privacy page covers Google's ad tag.
+- **Fix:** the "Heat Pump Cleaning" title on the dark home-page card was invisible (dark on dark).
+- **NZBN removed** from the footer, About page and Google data (client: the number was wrong and isn't needed).
+
+## Changes, 16 Oct 2026
+
+- **Medical equipment testing** (`/test-and-tag/medical-equipment-testing/`, NZ-wide): AS/NZS 3551 testing of basic equipment only (beds, hoists, chairs, pumps, oxygen concentrators and similar). Patient monitors, ECGs, infusion pumps and defibrillators are not offered. Body protected area checks are arranged with a registered electrician. Legal basis: Electricity (Safety) Regulations 2010, reg 91 (normal AS/NZS 3760 tags don't cover medical devices, reg 26).
+- **Fire extinguisher & fire blanket checks** (`/test-and-tag/fire-extinguisher-testing/`, NZ-wide): inspection and testing to NZS 4503:2005, every 12 months (6 in harsh sites). No refills or sales. Refills and 5-yearly pressure tests go to a specialist partner. Intervals stated honestly (Commerce Commission fined a company in 2020 for overclaiming).
+- Both added to the Services menu, footer, quote form, home Test & Tag card, home FAQ, Test & Tag page, city and rural pages, sitemap and redirects.
+- **Electrical Services:** Midha is a Registered Electrical Service Technician. New installations are done by a registered electrician, with Midha assisting (EWRB 2025 registration notice, EST class in force 1 Sep 2026). Badge shown on the Electrical page, About page and footer.
+- **Terms and privacy** updated for medical and fire results, and for work done by partners (registered electrician, extinguisher refill/pressure-test specialist).
+- **Giveaway** entry stays "like the post and tag 3 friends" (client decision).

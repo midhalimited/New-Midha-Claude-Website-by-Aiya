@@ -8,7 +8,49 @@
   // visitor's email app with their details filled in.
   var FORMSPREE_ID = '';
   var EMAIL = 'midhalimited@gmail.com';
+
+  // Google Ads conversion tracking. Leave empty until you have a Google Ads
+  // account. Then paste your tag ID (looks like 'AW-123456789') and the
+  // conversion labels Google gives you for "Quote form" and "Phone call clicks".
+  // Nothing from Google loads while GOOGLE_ADS_ID is empty.
+  var GOOGLE_ADS_ID = '';
+  var ADS_LABEL_FORM = '';
+  var ADS_LABEL_CALL = '';
   // -------------------------------------------------------------------------
+
+  // Google Ads (only when configured)
+  var track = function () {};
+  if (GOOGLE_ADS_ID) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GOOGLE_ADS_ID);
+    document.head.appendChild(gs);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GOOGLE_ADS_ID);
+    track = function (label) {
+      if (label) window.gtag('event', 'conversion', { send_to: GOOGLE_ADS_ID + '/' + label });
+    };
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href^="tel:"]');
+      if (a) track(ADS_LABEL_CALL);
+    });
+    if (document.body.hasAttribute('data-thanks')) track(ADS_LABEL_FORM);
+  }
+
+  // Giveaway: next draw is the end of March, June, September or December
+  var draws = document.querySelectorAll('[data-next-draw]');
+  if (draws.length) {
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var yr = today.getFullYear();
+    var ends = [new Date(yr, 2, 31), new Date(yr, 5, 30), new Date(yr, 8, 30), new Date(yr, 11, 31), new Date(yr + 1, 2, 31)];
+    var next = ends[ends.length - 1];
+    for (var d = 0; d < ends.length; d++) { if (ends[d] >= today) { next = ends[d]; break; } }
+    var drawText = next.getDate() + ' ' + ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][next.getMonth()] + ' ' + next.getFullYear();
+    draws.forEach(function (el) { el.textContent = drawText; });
+  }
 
   document.documentElement.classList.remove('no-js');
 
@@ -111,6 +153,7 @@
       if (!FORMSPREE_ID) {
         var body = '';
         data.forEach(function (v, k) { if (k !== '_gotcha' && v) body += k + ': ' + v + '\n'; });
+        track(ADS_LABEL_FORM);
         window.location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Quote request — ' + (data.get('service') || 'Midha website')) + '&body=' + encodeURIComponent(body);
         show('Your email app should now open with your details filled in. Just press send, or call us on 022 407 8603.', true);
         return;

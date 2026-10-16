@@ -160,7 +160,7 @@ p { margin: 0; }
 .nav a:hover, .nav button.nav-parent:hover, .nav a[aria-current="page"] { background: rgba(28,28,28,0.05); }
 .has-sub { position: relative; }
 .submenu {
-  position: absolute; top: calc(100% + 8px); left: 0; min-width: 260px; list-style: none; margin: 0; padding: 10px;
+  position: absolute; top: calc(100% + 8px); left: 0; min-width: 290px; list-style: none; margin: 0; padding: 10px;
   background: rgba(255,255,255,0.92); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur));
   border: 1px solid var(--c-border); border-radius: var(--r-md); box-shadow: var(--shadow-lift);
   display: none;
@@ -426,3 +426,23 @@ details.inclusions ul { margin: 0; padding-left: 18px; font-size: 0.92rem; }
 /* Fixes */
 .submenu a { justify-content: flex-start !important; gap: 10px; }
 [id], .field input, .field select, .field textarea, .form-status { scroll-margin-top: 120px; }
+
+/* ---- Test & tag locations (NZ-wide city links) ---- */
+.loc-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.loc-grid a { display: flex; flex-direction: column; gap: 2px; height: 100%; padding: 14px 18px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--r-md); font-family: var(--f-head); font-weight: 600; color: var(--c-ink); text-decoration: none; transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.loc-grid a span { font-family: var(--f-body); font-weight: 400; font-size: var(--fs-small); color: var(--c-muted); }
+.loc-grid a:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); color: var(--c-ink); }
+.section--sage .loc-grid a { border-color: transparent; }
+
+/* ---- Numbered steps ---- */
+.steps { list-style: none; padding: 0; margin: 0; }
+.steps .card { position: relative; }
+.step-num { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--c-ink); color: #fff; font-family: var(--f-head); font-weight: 700; }
+.card .chips { margin-top: 4px; }
+.card .chips li { background: var(--c-bg); }
+
+@media (prefers-reduced-motion: reduce) { .loc-grid a { transition: none; } .loc-grid a:hover { transform: none; } }
+
+/* Headings on dark cards (fix: "Heat Pump Cleaning" title was dark on dark) */
+.card--ink h2, .card--ink h3, .section--ink h2, .section--ink h3 { color: #fff; }
+@media (max-width: 560px) { .loc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .loc-grid a { padding: 12px 14px; } }

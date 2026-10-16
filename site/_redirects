@@ -4,6 +4,12 @@
 /heat-pump           /heat-pump-cleaning/   301
 /heat-pumps          /heat-pump-cleaning/   301
 /test-tag            /test-and-tag/         301
+/test-and-tag-nz     /test-and-tag/         301
+/locations           /test-and-tag/#locations 302
+/medical-test-and-tag      /test-and-tag/medical-equipment-testing/  301
+/medical-testing           /test-and-tag/medical-equipment-testing/  301
+/fire-extinguishers        /test-and-tag/fire-extinguisher-testing/  301
+/fire-extinguisher-testing /test-and-tag/fire-extinguisher-testing/  301
 /electrical          /electrical-services/  301
 /about-us            /about/                301
 /contact-us          /contact/              301
