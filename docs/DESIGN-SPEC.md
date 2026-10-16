@@ -18,7 +18,7 @@ Built as a static site for Cloudflare Pages (see `DEPLOY-TO-CLOUDFLARE.md`).
 | RCD testing | Under Test & Tag | Client |
 | Stats | 14,500+ items tested (commercial test & tag), 200+ home heat pumps serviced, < 2 hr reply, 5.0 Google | Client |
 | Reviews | The 8 existing reviews kept for now | Client |
-| Giveaway | "Win a free heat pump clean" is running; banner + section. Entry: like post, tag 3 Wellington friends | Client, promo image |
+| Giveaway | "Win a free heat pump clean" is running; banner + section. Free Pro Clean every 3 months, Facebook only. Entry: like the post and comment your suburb (tagging friends dropped to follow Meta promotion rules) | Client, promo image |
 | Logo | Cartoon technician mascot, used as supplied | Client |
 | Domain / host | midha.co.nz on Cloudflare (Pages) | Client |
 | Form | Formspree to midhalimited@gmail.com; until set up, falls back to opening the visitor's email app | Client agreed Formspree |
