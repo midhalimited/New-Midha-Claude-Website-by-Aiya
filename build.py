@@ -280,7 +280,7 @@ def head(title, desc, path, extra_ld=None):
 <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@600,700&amp;f[]=switzer@400,500,600&amp;display=swap">
 <link rel="stylesheet" href="/assets/css/styles.css">
-<script src="/assets/js/main.js?v=20261021" defer></script>
+<script src="/assets/js/main.js?v=20261021b" defer></script>
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0], ensure_ascii=False)}</script>
 </head>
 <body>
@@ -1090,10 +1090,11 @@ def misc():
     simple("/thanks/", "Thanks | Midha Limited", "Thanks for your enquiry.", "Thanks, we’ve got your request.",
            f'<p class="lead">We’ll be in touch within 2 hours during business hours ({HOURS}). If it’s urgent, call <a href="tel:{TEL}">{PHONE}</a>.</p><p><a class="btn btn--primary" href="/">Back to home</a></p>', robots="noindex")
     updated = "16 October 2026"
+    privacy_updated = "21 October 2026"
     giveaway_updated = "21 October 2026"
     contact = f'<a href="mailto:{EMAIL}">{EMAIL}</a> or {PHONE}'
     simple("/privacy/", "Privacy Policy | Midha Limited", "How Midha Limited collects, uses, shares and protects your personal information under the New Zealand Privacy Act 2020.", "Privacy policy",
-           f"""<p class="note">Last updated {updated}</p>
+           f"""<p class="note">Last updated {privacy_updated}</p>
 <p class="lead">Midha Limited (“we”, “us”) respects your privacy. This policy explains what personal information we collect, why, who we share it with, and your rights under the New Zealand Privacy Act 2020.</p>
 <h2>Who we are</h2>
 <p>Midha Limited is a New Zealand company based in Wainuiomata, Lower Hutt. We provide test &amp; tag, medical equipment testing and fire extinguisher checks across New Zealand, and heat pump cleaning and electrical services in the Wellington region. For anything about your personal information, contact our privacy officer at {contact}.</p>
@@ -1114,7 +1115,7 @@ def misc():
   <li>To prepare test &amp; tag registers and remind you when retests are due.</li>
   <li>To invoice you and keep business and tax records.</li>
   <li>To run the giveaway and contact the winner.</li>
-  <li>To keep our website working and secure, and, if we advertise, to see which ads lead to enquiries.</li>
+  <li>To keep our website working and secure, and to see which of our Google ads lead to enquiries.</li>
 </ul>
 <p>We won’t send you marketing emails or texts unless you’ve agreed to them, and every marketing message will let you unsubscribe.</p>
 <h2>Who we share it with</h2>
@@ -1122,14 +1123,14 @@ def misc():
 <ul>
   <li><strong>Partner technicians</strong> who carry out test &amp; tag jobs for us outside the Wellington region. They get only what they need to do your job, such as the site address, contact person and equipment details.</li>
   <li><strong>Partners we arrange work through</strong>, such as a registered electrician for new electrical installations, or a specialist who refills and pressure tests fire extinguishers. They also get only what they need to do the work.</li>
-  <li><strong>Service providers</strong> who help us run the business: our email provider (Google), our website host (Cloudflare), our website form provider (Formspree), our font provider (Fontshare), and our accountant. If we advertise on Google, Google also receives information about ad clicks, as explained below.</li>
+  <li><strong>Service providers</strong> who help us run the business: our email provider (Google), our website host (Cloudflare), our website form provider (Formspree), our font provider (Fontshare), and our accountant. Because we advertise on Google, Google also receives information about ad clicks, as explained below.</li>
   <li><strong>Meta (Facebook)</strong>, which runs the platform our giveaway takes place on.</li>
   <li>Anyone we’re required to share it with by law.</li>
 </ul>
 <h2>Information stored overseas</h2>
 <p>Some of our service providers store information outside New Zealand, mainly in the United States. We use well-known providers with strong security, and we only use them to store and process information for us, not for their own purposes.</p>
 <h2>Cookies and advertising</h2>
-<p>Our website doesn’t use cookies to track you. If we advertise on Google, our website may use Google’s advertising tag. It sets cookies that tell us when someone who clicked one of our ads sends a quote request or taps to call us, so we know which ads are useful. It doesn’t give us your name or contact details. You can manage Google ad settings at <a href="https://myadcenter.google.com/" rel="noopener">myadcenter.google.com</a>.</p>
+<p>Our website doesn’t set its own tracking cookies. We advertise on Google, so our website uses Google’s advertising tag. It sets cookies that tell us when someone who clicked one of our ads sends a quote request or taps to call us, so we know which ads are useful. It doesn’t give us your name or contact details. You can manage Google ad settings at <a href="https://myadcenter.google.com/" rel="noopener">myadcenter.google.com</a>.</p>
 <h2>How we keep it safe</h2>
 <p>We keep personal information in password-protected accounts, limit who can see it, and only keep it as long as we need it. Job and invoice records are kept for at least 7 years, because New Zealand tax law requires it. Quote enquiries that don’t go ahead are deleted when we no longer need them.</p>
 <p>If a privacy breach happens that is likely to cause serious harm, we’ll tell the people affected and the Privacy Commissioner as soon as we can.</p>

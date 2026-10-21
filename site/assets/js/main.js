@@ -9,13 +9,12 @@
   var FORMSPREE_ID = 'mljgypdb';
   var EMAIL = 'midhalimited@gmail.com';
 
-  // Google Ads conversion tracking. Leave empty until you have a Google Ads
-  // account. Then paste your tag ID (looks like 'AW-123456789') and the
-  // conversion labels Google gives you for "Quote form" and "Phone call clicks".
+  // Google Ads conversion tracking: the account's tag ID and the conversion
+  // labels for "Quote form" and "Phone call clicks" (Goals > Conversions).
   // Nothing from Google loads while GOOGLE_ADS_ID is empty.
-  var GOOGLE_ADS_ID = '';
-  var ADS_LABEL_FORM = '';
-  var ADS_LABEL_CALL = '';
+  var GOOGLE_ADS_ID = 'AW-18321544166';
+  var ADS_LABEL_FORM = 'sNrdCIrxs6QdEOansqBE';
+  var ADS_LABEL_CALL = 'ZKCoCI3xs6QdEOansqBE';
   // -------------------------------------------------------------------------
 
   // Google Ads (only when configured)
