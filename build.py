@@ -11,7 +11,7 @@ PHONE = "022 407 8603"
 TEL = "+64224078603"
 EMAIL = "midhalimited@gmail.com"
 HOURS = "Mon–Sat 7:30am–6:00pm"
-TODAY = datetime.date(2026, 10, 16).isoformat()
+TODAY = datetime.date(2026, 10, 21).isoformat()
 STANDARD = "AS/NZS 3760:2022"
 MED_STD = "AS/NZS 3551"
 FIRE_STD = "NZS 4503:2005"
@@ -297,7 +297,7 @@ def nav(active):
     services = "".join(f'<li><a href="{href}"{cur(href)}>{icon(ic, 18)} {e(name)}</a></li>' for href, name, ic in menu)
     areas = (f'<li><a href="/test-and-tag/#locations">{icon("tag", 18)} Test &amp; tag: all of NZ</a></li>'
              f'<li><a href="/service-areas/">{icon("pin", 18)} Heat pumps &amp; electrical: Wellington</a></li>')
-    return f"""<div class="announce" role="region" aria-label="Promotion">Win a free Pro Clean. A new Wellington winner every 3 months. <a href="/heat-pump-cleaning/#giveaway">How to enter</a></div>
+    return f"""<div class="announce" role="region" aria-label="Promotion">Win a free heat pump clean, worth $79. A new Wellington winner every 3 months. <a href="/heat-pump-cleaning/#giveaway">How to enter</a></div>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="Midha Limited, home">
@@ -525,7 +525,7 @@ def home():
 <section class="hero"><div class="wrap"><div class="hero-frame">
   {hero_img}
   <div class="hero-panel glass reveal">
-    <div class="hero-meta"><span class="badge badge--urgent">Win a free Pro Clean</span><span>Wainuiomata-based · 100% NZ owned</span></div>
+    <div class="hero-meta"><span class="badge badge--urgent">Win a free heat pump clean</span><span>Wainuiomata-based · 100% NZ owned</span></div>
     <h1>Test &amp; tag, heat pump cleaning and electrical work, sorted.</h1>
     <p class="lead">Test &amp; tag for workplaces anywhere in New Zealand, plus heat pump cleaning and electrical work for Greater Wellington. Fixed upfront prices, digital reports, and a reply within 2 hours.</p>
     <div class="btn-row"><a class="btn btn--primary" href="/contact/#quote">Get a free quote</a><a class="btn btn--light" href="tel:{TEL}">Call {PHONE}</a></div>
@@ -619,8 +619,8 @@ def heat_pump():
 <section class="section section--sage" id="giveaway" aria-labelledby="give-title"><div class="wrap giveaway">
   <a href="{e(FB_POST)}" target="_blank" rel="noopener" aria-label="Open our giveaway post on Facebook (opens in a new tab)">{pic("giveaway-promo", "Midha giveaway poster: win one free heat pump cleaning in Wellington", sizes="320px")}</a>
   <div class="stack"><span class="badge badge--urgent" style="align-self:flex-start">Next draw: <span data-next-draw>{NEXT_DRAW}</span></span>
-    <h2 id="give-title">Win a free Pro Clean.</h2>
-    <p class="lead">Every 3 months we give a free Pro Clean ($79 value) to one Wellington winner, drawn at random. Draws happen at the end of March, June, September and December.</p>
+    <h2 id="give-title">Win a free heat pump clean.</h2>
+    <p class="lead">Every 3 months we give a free heat pump clean (our $79 Pro Clean) to one Wellington winner, drawn at random. Draws happen at the end of March, June, September and December.</p>
     <p>To enter, go to our giveaway post on Facebook and:</p>
     <ul class="check-list"><li>Like the post</li><li>Tag 3 friends in Wellington in the comments</li><li>Live in the Wellington region</li></ul>
     <div class="btn-row"><a class="btn btn--primary" href="{e(FB_POST)}" target="_blank" rel="noopener">Enter on Facebook <span class="visually-hidden">(opens in a new tab)</span></a></div>
@@ -1090,7 +1090,7 @@ def misc():
     simple("/thanks/", "Thanks | Midha Limited", "Thanks for your enquiry.", "Thanks, we’ve got your request.",
            f'<p class="lead">We’ll be in touch within 2 hours during business hours ({HOURS}). If it’s urgent, call <a href="tel:{TEL}">{PHONE}</a>.</p><p><a class="btn btn--primary" href="/">Back to home</a></p>', robots="noindex")
     updated = "16 October 2026"
-    giveaway_updated = "15 October 2026"
+    giveaway_updated = "21 October 2026"
     contact = f'<a href="mailto:{EMAIL}">{EMAIL}</a> or {PHONE}'
     simple("/privacy/", "Privacy Policy | Midha Limited", "How Midha Limited collects, uses, shares and protects your personal information under the New Zealand Privacy Act 2020.", "Privacy policy",
            f"""<p class="note">Last updated {updated}</p>
@@ -1168,9 +1168,9 @@ def misc():
 <p>These terms are governed by New Zealand law.</p>
 <h2>Contact</h2>
 <p>Questions about these terms? Contact us at {contact}.</p>""")
-    simple("/giveaway-terms/", "Giveaway Terms | Win a Free Pro Clean | Midha Limited", "Terms and conditions for the Midha Limited free Pro Clean giveaway, drawn every 3 months for Wellington region residents.", "Giveaway terms and conditions",
+    simple("/giveaway-terms/", "Giveaway Terms | Win a Free Heat Pump Clean | Midha Limited", "Terms and conditions for the Midha Limited free heat pump clean giveaway, drawn every 3 months for Wellington region residents.", "Giveaway terms and conditions",
            f"""<p class="note">Last updated {giveaway_updated}</p>
-<p class="lead">These terms apply to the Midha Limited “Win a free Pro Clean” giveaway. By entering, you agree to them.</p>
+<p class="lead">These terms apply to the Midha Limited “Win a free heat pump clean” giveaway. By entering, you agree to them.</p>
 <h2>Promoter</h2>
 <p>The promoter is Midha Limited, Wainuiomata, Lower Hutt. Contact {contact}.</p>
 <h2>The prize</h2>
