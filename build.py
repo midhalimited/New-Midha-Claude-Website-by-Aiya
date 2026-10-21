@@ -280,7 +280,7 @@ def head(title, desc, path, extra_ld=None):
 <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@600,700&amp;f[]=switzer@400,500,600&amp;display=swap">
 <link rel="stylesheet" href="/assets/css/styles.css">
-<script src="/assets/js/main.js" defer></script>
+<script src="/assets/js/main.js?v=20261021" defer></script>
 <script type="application/ld+json">{json.dumps(ld if len(ld) > 1 else ld[0], ensure_ascii=False)}</script>
 </head>
 <body>

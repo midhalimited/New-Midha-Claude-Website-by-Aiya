@@ -6,7 +6,7 @@
   // Paste your Formspree form ID here (e.g. 'xyzabcd') to send enquiries
   // straight to midhalimited@gmail.com. Until then, the form opens the
   // visitor's email app with their details filled in.
-  var FORMSPREE_ID = '';
+  var FORMSPREE_ID = 'mljgypdb';
   var EMAIL = 'midhalimited@gmail.com';
 
   // Google Ads conversion tracking. Leave empty until you have a Google Ads
@@ -158,6 +158,7 @@
         show('Your email app should now open with your details filled in. Just press send, or call us on 022 407 8603.', true);
         return;
       }
+      data.append('_subject', 'Quote request: ' + (data.get('service') || 'Midha website'));
       btn.disabled = true; var label = btn.textContent; btn.textContent = 'Sending…';
       fetch('https://formspree.io/f/' + FORMSPREE_ID, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
         .then(function (r) {
